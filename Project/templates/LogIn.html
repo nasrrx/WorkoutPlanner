@@ -8,17 +8,20 @@
 
 </head>
 <body>
-    <ul class="navbar-nav">
-        <div class="navbar">
-            <div>
-                {% load static %}
-                <img src="{% static 'images/Image.png' %}" alt="Logo">
-            </div>
-            <div class="nav-links">
-                <a href="{% url 'Home' %}">Home</a>
-            </div>
-        </div>
-    </ul>
+    
+    <header>
+        <nav class="navbar">
+          <a href="#" class="logo">
+            {% load static %}
+            <img src="{% static 'images/Image.png' %}" alt="Logo">
+          </a>
+          <ul class="menu-links">
+            <li><a href="{% url 'Home' %}">Home</a></li>
+            <li class="join-btn"><a href="{% url 'LogIn' %}">Log In</a></li>
+            <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
+          </ul>
+        </nav>
+      </header>
 
     <div class="content">
         <div class="text-section">
@@ -31,21 +34,24 @@
         <div class="login-form">
             <h1>Login</h1>
             <form method="post">
-                <div class="input-group">
-                    <label for="Email">Email</label>
-                    <input type="email" name="Email" placeholder="Enter your email" required>
-                </div>
-                <div class="input-group">
-                    <label for="Password">Password</label>
-                    <input type="Password" name="Password" placeholder="Enter your password" required>
-                </div>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
                 <div class="button-wrapper">
-                    <button type="submit" class="btn">Login</button>
+                    <button type="submit" class="btn">Log In</button>
                 </div>
             </form>
             <div class="redirect-signup">
                 <p>Don't have an account? <a href="{% url 'SignUp' %}">Sign up here</a></p>
             </div>
+            
         </div>
     </div>
 </body>
@@ -60,40 +66,64 @@
         line-height: 1.6;
         background-color: #FCFAEE;
 
+
     }
 
-    .navbar {
+    header {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.5); 
+        backdrop-filter: blur(5px); 
+    }
+    
+  
+      header .navbar {
+        max-width: 1280px;
+        margin: 0 auto;
         display: flex;
         align-items: center;
-        justify-content: space-between; 
-        padding: 5px 20px;
-        background-color: #E6E4DB;
-        width: 100%; 
-        position: fixed; 
-        top: 0; 
-        left: 0;
-        z-index: 1000; 
-        border-bottom: 3px ;
-    }
-
-    .navbar img {
-        width: 50px; 
-        height: auto; 
-    }
-
-    .nav-links {
-        margin-left: auto;
-    }
-
-    .content {
+        justify-content: space-between;
+      }
+  
+      .navbar .logo img {
+        width: 50px;
+        height: auto;
+      }
+  
+      .navbar .menu-links {
         display: flex;
-        justify-content: space-between; 
+        align-items: center;
+        list-style: none;
+        gap: 30px;
+      }
+  
+      .navbar .menu-links li a {
+        color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.2s ease;
+      }
+  
+      .navbar .menu-links .join-btn a {
+        border: 1px solid #fff;
+        padding: 8px 15px;
+        border-radius: 4px;
+      }
+
+      .content {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
         margin-top: 150px; 
-        padding: 20px; 
-        flex-wrap: wrap; 
-        gap: 20px; 
+        padding: 20px;
+        flex-wrap: wrap;
+        gap: 20px;
     }
+    
     
     .text-section {
         max-width: 600px;
