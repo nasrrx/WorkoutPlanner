@@ -1,0 +1,12 @@
+# Django Framework
+django>=3.2,<4.0  # Example: Django 3.2.x
+
+# Database adapter for PostgreSQL
+psycopg2>=2.9.3,<3.0  # Remove if not using PostgreSQL
+
+# Testing framework
+pytest-django>=4.5,<5.0
+
+# Linter and formatting tools (optional, for code quality)
+flake8>=3.9,<4.0
+black>=22.1,<23.0
