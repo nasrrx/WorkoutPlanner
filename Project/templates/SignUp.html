@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | LiftRight</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+          <a href="#" class="logo">
+            {% load static %}
+            <img src="{% static 'images/Image.png' %}" alt="Logo">
+          </a>
+          <ul class="menu-links">
+            <li><a href="{% url 'Home' %}">Home</a></li>
+            <li><a href="{% url 'LogIn' %}">Log In</a></li>
+            <li class="join-btn"><a href="{% url 'SignUp' %}">Sign Up</a></li>
+          </ul>
+        </nav>
+      </header>
+
+    <div class="content">
+        <div class="signup-form">
+            <h1>Sign Up</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="button-wrapper">
+                    <button type="submit" class="btn">Sign Up</button>
+                </div>
+            </form>
+            <div class="redirect-login">
+                <p>Already have an account? <a href="{% url 'LogIn' %}">Login here</a></p>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #FCFAEE;
+        font-family: 'Poppins', sans-serif;
+    }
+    header {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.5); 
+        backdrop-filter: blur(5px); 
+    }
+    
+  
+      header .navbar {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+  
+      .navbar .logo img {
+        width: 50px;
+        height: auto;
+      }
+  
+      .navbar .menu-links {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        gap: 30px;
+      }
+  
+      .navbar .menu-links li a {
+        color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.2s ease;
+      }
+  
+      .navbar .menu-links .join-btn a {
+        border: 1px solid #fff;
+        padding: 8px 15px;
+        border-radius: 4px;
+      }
+
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+    }
+
+    .signup-form {
+        background-color: #FCFAEE;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .signup-form h1 {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #B8001F;
+        margin-bottom: 20px;
+    }
+
+    .signup-form form {
+        display: flex;
+        flex-direction: column;
+    }
+    .input-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 60px; 
+    }
+    
+    .input-row .input-group {
+        flex: 1;
+    }
+    
+    .input-row .input-group input {
+        width: 100%; 
+    }
+    
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #384B70;
+    }
+
+    .input-group input {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 100%;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #507687;
+        box-shadow: 0 0 5px rgba(80, 118, 135, 0.5);
+        outline: none;
+    }
+
+    .button-wrapper {
+        text-align: center;
+    }
+
+    .signup-form button {
+        background: linear-gradient(90deg, #507687, #3a5876);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 14px;
+        transition: transform 0.2s, background-color 0.3s ease;
+    }
+
+    .signup-form button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(90deg, #3a5876, #507687);
+    }
+
+    .redirect-login {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .redirect-login a {
+        color: #B8001F;
+        text-decoration: none;
+    }
+
+    .redirect-login a:hover {
+        text-decoration: underline;
+    }
+</style>
