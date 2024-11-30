@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        #container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #edit-form {
+            display: none; 
+            margin-top: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #11045b;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3d2592;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h1, h2 {
+            color: #a70101;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Submitted Data:</h1>
+        <div id="data-display"></div>
+
+        <button id="edit-button" onclick="toggleEditForm()">Edit</button>
+
+        
+        <form id="edit-form">
+            <h2>Edit Your Details</h2>
+            <label for="edit-name">Name:</label>
+            <input type="text" id="edit-name" name="name" required><br>
+
+            <label for="edit-age">Age:</label>
+            <input type="number" id="edit-age" name="age" required><br>
+
+            <label for="edit-email">Email:</label>
+            <input type="email" id="edit-email" name="email" required><br>
+
+            <label for="edit-weight">Weight (kg):</label>
+            <input type="number" id="edit-weight" name="weight" step="0.1" required><br>
+
+            <label for="edit-height">Height (cm):</label>
+            <input type="number" id="edit-height" name="height" required><br>
+
+            <button type="button" onclick="updateData()">Update</button>
+        </form>
+    </div>
+
+    <script>
+      
+        const params = new URLSearchParams(window.location.search);
+
+        const data = {
+            name: params.get('name'),
+            age: params.get('age'),
+            email: params.get('email'),
+            weight: params.get('weight'),
+            height: params.get('height'),
+        };
+
+       
+        const displayData = () => {
+            const displayDiv = document.getElementById('data-display');
+            displayDiv.innerHTML = `
+                <p>Name: ${data.name}</p>
+                <p>Age: ${data.age}</p>
+                <p>Email: ${data.email}</p>
+                <p>Weight: ${data.weight} kg</p>
+                <p>Height: ${data.height} cm</p>
+            `;
+
+            
+            document.getElementById('edit-name').value = data.name;
+            document.getElementById('edit-age').value = data.age;
+            document.getElementById('edit-email').value = data.email;
+            document.getElementById('edit-weight').value = data.weight;
+            document.getElementById('edit-height').value = data.height;
+        };
+
+       
+        const toggleEditForm = () => {
+            const form = document.getElementById('edit-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        };
+
+       
+        const updateData = () => {
+          
+            data.name = document.getElementById('edit-name').value;
+            data.age = document.getElementById('edit-age').value;
+            data.email = document.getElementById('edit-email').value;
+            data.weight = document.getElementById('edit-weight').value;
+            data.height = document.getElementById('edit-height').value;
+
+            
+            displayData();
+
+            
+            document.getElementById('edit-form').style.display = 'none';
+            alert('Data updated successfully!');
+        };
+
+        displayData();
+    </script>
+</body>
+</html>
