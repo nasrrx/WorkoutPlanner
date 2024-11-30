@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>About Us | LiftRight</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                {% load static %}
+                <img src="{% static 'images/Image.png' %}" alt="Logo">
+            </a>
+            <ul class="menu-links">
+                <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
+                <li><a href="{% url 'LogIn' %}">Log In</a></li>
+                <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="about-section-container">
+        <div class="text-content">
+            <h1>About LiftRight</h1>
+            <p>
+                Welcome to LiftRight, a tool built to simplify your fitness journey. Whether you're just starting out, refining your routine, or trying to stay healthy with a busy schedule, our app is designed with you in mind.
+            </p>
+            <p>
+                We know how overwhelming fitness planning can be. That's why we focus on personalized workout and diet plans tailored to your goals, fitness level, and lifestyle. With easy-to-follow routines and actionable advice, we aim to remove the guesswork and help you focus on what really matters: getting stronger, healthier, and more confident.
+            </p>
+        </div>
+        <div class="photo-content">
+            {% load static %}
+            <img src="{% static 'images/photo1.jpg' %}" alt="Photo 1">
+            <img src="{% static 'images/photo2.jpg' %}" alt="Photo 2">
+        </div>
+    </section>
+
+    <section class="why-section-container">
+        <div class="why-content">
+            <h2>Why Choose Us?</h2>
+            <ul class="why-list">
+                <li class="why-item">Plans that fit your needs — personalized and goal-oriented.</li>
+                <li class="why-item">A simple, user-friendly interface to make fitness planning easy.</li>
+                <li class="why-item">Comprehensive tools for workouts, nutrition, and progress tracking.</li>
+                <li class="why-item">Quick and reliable performance to keep you focused on your goals.</li>
+            </ul>
+        </div>
+        <div class="photo-content">
+            {% load static %}
+            <img src="{% static 'images/photo3.avif' %}" alt="Photo 3">
+            <img src="{% static 'images/photo4.webp' %}" alt="Photo 4">
+        </div>
+    </section>
+
+    <footer class="footer">
+        <h3>Contact Us</h3>
+        <p>Email: contact@LiftRight.com</p>
+        <p>Phone: +123 456 7890</p>
+        <p>© 2024 LiftRight. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        background-color: #FCFAEE;
+    }
+
+    header {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .navbar {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar .logo img {
+        width: 50px;
+        height: auto;
+    }
+
+    .navbar .menu-links {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        gap: 30px;
+    }
+
+    .navbar .menu-links li a {
+        color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .menu-links .join-btn a {
+        border: 1px solid #fff;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    section {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .about-section-container{
+        margin-top: 200;
+        display: flex;
+        gap: 20px; 
+        align-items: flex-start; 
+        margin-bottom: 0;
+    }
+  
+    .why-section-container {
+        margin-top: 0;
+        display: flex;
+        gap: 20px; 
+        align-items: flex-start; 
+        margin-bottom: 40px;
+    }
+
+    .text-content,
+    .why-content {
+        flex: 1;
+    }
+
+    .text-content h1,
+    .why-content h2 {
+        color: #384B70;
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .text-content p,
+    .why-list li {
+        font-size: 18px;
+        color: #507687;
+        margin-bottom: 15px;
+    }
+
+    .photo-content {
+        margin-top: 200px;
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 20px; 
+    }
+
+    .why-section-container .photo-content {
+        margin-top: 0;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 20px;
+    }
+    .photo-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer {
+        background-color: #2A3E4C;
+        color: #fff;
+        padding: 40px 20px;
+        text-align: center;
+        font-size: 16px;
+        margin-top: 30px;
+    }
+
+    .footer h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #B8001F;
+        margin-bottom: 10px;
+    }
+
+    .footer p {
+        font-size: 16px;
+        color: #d1d1d1;
+    }
+
+</style>

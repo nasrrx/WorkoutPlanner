@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 def signup_view(request):
     if request.method == 'POST':
@@ -19,7 +20,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('Home')  
+            return redirect('Profile')  
     else:
         form = CustomAuthenticationForm()
     return render(request, 'LogIn.html', {'form': form})
@@ -41,5 +42,27 @@ def Home(request):
     }
     return render(request, 'Home.html', context)
 
+
+@login_required
 def Profile(request):
-    return render(request,'Profile.html')
+    user = request.user 
+    
+    if hasattr(user, 'height') and hasattr(user, 'weight') and user.height and user.weight:
+        height_m = user.height / 100  
+        bmi = round(user.weight / (height_m ** 2), 2)  
+    else:
+        bmi = "Not available"  
+    
+    context = {
+        'name': user.username,
+        'email': user.email,
+        'age': user.age,  
+        'height': user.height,
+        'weight': user.weight,
+        'bmi': bmi,  
+    }
+    return render(request, 'Profile.html', context)
+
+
+def About(request):
+    return render(request,'About.html')
