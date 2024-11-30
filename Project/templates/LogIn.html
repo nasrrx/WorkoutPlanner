@@ -16,7 +16,7 @@
             <img src="{% static 'images/Image.png' %}" alt="Logo">
           </a>
           <ul class="menu-links">
-            <li><a href="{% url 'Home' %}">Home</a></li>
+            <li><a href="{% url 'About' %}">About Us</a></li>
             <li class="join-btn"><a href="{% url 'LogIn' %}">Log In</a></li>
             <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
           </ul>
@@ -54,6 +54,12 @@
             
         </div>
     </div>
+    <footer class="footer">
+        <h3>Contact Us</h3>
+        <p>Email: contact@LiftRight.com</p>
+        <p>Phone: +123 456 7890</p>
+        <p>© 2024 LiftRight. All rights reserved.</p>
+    </footer>
 </body>
 </html>
 
@@ -61,12 +67,9 @@
     body {
         margin: 0; 
         padding: 0;
-        {% comment %} background: linear-gradient(to bottom, #fcfaf0, #eae8dc); {% endcomment %}
         font-family: 'Poppins', sans-serif;
         line-height: 1.6;
         background-color: #FCFAEE;
-
-
     }
 
     header {
@@ -119,6 +122,7 @@
         justify-content: space-between;
         align-items: center;
         margin-top: 150px; 
+        margin-bottom: 200px; 
         padding: 20px;
         flex-wrap: wrap;
         gap: 20px;
@@ -232,4 +236,25 @@
     .redirect-signup a:hover {
         text-decoration: underline;
     }
+    .footer {
+        background-color: #2A3E4C;
+        color: #fff;
+        padding: 40px 20px;
+        text-align: center;
+        font-size: 16px;
+        margin-top: 30px;
+    }
+
+    .footer h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #B8001F;
+        margin-bottom: 10px;
+    }
+
+    .footer p {
+        font-size: 16px;
+        color: #d1d1d1;
+    }
+    
 </style>
