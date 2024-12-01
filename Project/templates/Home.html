@@ -3,86 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Plan</title>
-    <link rel="stylesheet" href="../project sw/bootstrap.css"/>
-    <link rel="stylesheet" href="../project sw/first.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    
+    <title>Welcome | LiftRight</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    {% load static %}
 </head>
-<style>
-body {
-    background-color:beige;
-    }
-    </style>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <img src="{% static 'images/Image.png' %}" alt="Logo">
+            </a>
+            <ul class="menu-links">
+                <li><a href="{% url 'About' %}">About Us</a></li>
+                <li><a href="{% url 'Home' %}">Home</a></li>
+                <li><a href="{% url 'Profile' %}">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div>
-         <div class="txt">
-           <h2 style="font-size: 3rem;">Your Personalized Workout Plan</h2>
-           <div class="first">
-            <p> <h2>Achieve your fitness goals with tailored plans, expert guidance, and real results!</h2></p>
-            </div>
-            <div class="bttns">
-                <a href="####" class="btn-primary">Get Started</a> <!--workout plan-->
-                <a href="https://www.truepersonaltraining.co.uk/b/benefits-of-a-workout-plan#:~:text=This%20plan%20helps%20you%20maintain,will%20help%20create%20more%20progress." class="btn-secondary">Learn More</a>
-            </div>
+    <main id="container">
+        <div class="welcome-section">
+            <h1>Welcome to LiftRight!</h1>
+            <p>Your journey to a healthier, fitter you begins here. Let’s get started with a personalized workout plan tailored just for you.</p>
         </div>
-    </div>
 
-<div>
-        <div class="main-img">
-            <img src="../project sw/main1photo.webp" style="position:fixed" class="main-img">/>
-           <!---- <img src="../project sw/secondimg.jpg" class="second-img"/> -->
+        <div class="download-section">
+            <button id="download-button" onclick="downloadWorkoutPlan()">Download Custom Workout Plan</button>
         </div>
-   </div>
-   <!---- <div class="img1">
-        <img src="../project sw/photo2.webp" width="1450" height="800" style="position:fixed">
-    </div> -->
 
-    <div> <!--header-->
-    <nav class="navbar bg-dark text-white navbar-dark navbar-expand fixed-top">
-        <ul class="navbar-nav">
-           
-            <li class="nav-item">
-                <a href="../project sw/result.html" class="nav-link">Profile</a>
-            </li>
-            
-
-            <li class="nav-item">
-                <a href="###" class="nav-link">Login</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="###" class="nav-link" >Sign Up</a> 
-                    </li>
-
-                   <!---- <li class="nav-item">
-                        <a href="###" class="nav-link">Workout Plan</a>
-                        </li> -->
-                    
-                        <li class="nav-item mx-auto">
-                            <div class="srch1">
-                    <input type="text">
-                    <button class="btn btn-outline-secondary" style="text-align: center;">Search</button>
-                   </div>
-                    </li>
-                    <li class="nav-item1">
-                        <a href="###" class="nav-link"><i class="bi bi-basket2"></i></a>
-                            </li>
-                    
+        <div class="extra-content">
+            <h2>Why Choose Us?</h2>
+            <ul>
+                <li>Personalized plans tailored to your goals.</li>
+                <li>Expert guidance to maximize your progress.</li>
+                <li>Achieve results with a program that works for you.</li>
+            </ul>
         </div>
-        <div> <!--footerr-->
-            <nav class="navbar2 bg-dark text-white navbar-dark navbar-expand fixed-bottom">
-            <ul class="navbar-nav">
-                <li class="nav-item1">
-                 <a href="https://www.facebook.com/goldsgym" class="nav-link"><i class="bi bi-facebook"></i></a>
-                     </li>
-                <li class="nav-item1">
-                    <a href="" class="nav-link"><i class="bi bi-whatsapp"></i></a>
-                </li>
-                <li class="nav-item1">
-                    <a href="" class="nav-link"><i class="bi bi-envelope-at-fill"></i></a>
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://www.facebook.com/goldsgym" target="_blank"><i class="bi bi-facebook"></i> Facebook</a>
+            <a href="https://api.whatsapp.com/send?phone=1234567890" target="_blank"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+            <a href="mailto:info@liftright.com"><i class="bi bi-envelope"></i> Email Us</a>
         </div>
-    
+        <p>&copy; 2024 LiftRight. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function downloadWorkoutPlan() {
+            window.location.href = '{% url "download_workout_plan" %}';
+        }
+    </script>
 </body>
 </html>
+
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to bottom, #fcfaf0, #eae8dc);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        backdrop-filter: blur(5px);
+        z-index: 10;
+    }
+
+    .navbar {
+        max-width: 1280px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar .logo img {
+        width: 50px;
+    }
+
+    .menu-links {
+        display: flex;
+        list-style: none;
+        gap: 20px;
+    }
+
+    .menu-links li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    /* Main Content */
+    #container {
+        margin-top: 100px;
+        padding: 20px;
+        text-align: center;
+        flex: 1;
+    }
+
+    .welcome-section h1 {
+        font-size: 2.5rem;
+        color: #507687;
+    }
+
+    .welcome-section p {
+        font-size: 1.2rem;
+        margin: 10px 0;
+        color: #3A5876;
+    }
+
+    .download-section button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background: linear-gradient(90deg, #507687, #3a5876);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .download-section button:hover {
+        background: #3d2592;
+    }
+
+    .extra-content h2 {
+        margin-top: 30px;
+        font-size: 1.8rem;
+        color: #507687;
+    }
+
+    .extra-content ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 400px;
+        text-align: left;
+    }
+
+    .extra-content ul li {
+        font-size: 1.1rem;
+        margin: 10px 0;
+        color: #3A5876;
+        position: relative;
+    }
+
+    .extra-content ul li:before {
+        content: "✔";
+        color: #507687;
+        margin-right: 10px;
+    }
+
+    /* Footer */
+    footer {
+        background: #333;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .social-links a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: white;
+    }
+
+    .social-links a i {
+        margin-right: 5px;
+    }
+</style>
