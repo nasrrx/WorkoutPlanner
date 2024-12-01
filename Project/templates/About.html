@@ -14,11 +14,19 @@
                 <img src="{% static 'images/Image.png' %}" alt="Logo">
             </a>
             <ul class="menu-links">
-                <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
-                <li><a href="{% url 'LogIn' %}">Log In</a></li>
-                <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
+                {% if user.is_authenticated %}
+                    <!-- User is logged in -->
+                    <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
+                    <li><a href="{% url 'Home' %}">Home</a></li>
+                    <li><a href="{% url 'Profile' %}">Profile</a></li>
+                {% else %}
+                    <!-- User is not logged in -->
+                    <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
+                    <li><a href="{% url 'LogIn' %}">Log In</a></li>
+                    <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
+                {% endif %}
             </ul>
-        </nav>
+        </nav>  
     </header>
 
     <section class="about-section-container">

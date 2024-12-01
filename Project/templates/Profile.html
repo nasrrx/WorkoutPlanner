@@ -9,17 +9,17 @@
 <body>
     <header>
         <nav class="navbar">
-          <a href="#" class="logo">
-            {% load static %}
-            <img src="{% static 'images/Image.png' %}" alt="Logo">
-          </a>
-          <ul class="menu-links">
-            <li><a href="{% url 'About' %}">About Us</a></li>
-            <li><a href="{% url 'Home' %}">Home</a></li>
-            <li class="join-btn"><a href="{% url 'Profile' %}">Profile</a></li>
-          </ul>
+            <a href="#" class="logo">
+                {% load static %}
+                <img src="{% static 'images/Image.png' %}" alt="Logo">
+            </a>
+            <ul class="menu-links">
+                <li><a href="{% url 'About' %}">About Us</a></li>
+                <li><a href="{% url 'Home' %}">Home</a></li>
+                <li class="join-btn"><a href="{% url 'Profile' %}">Profile</a></li>
+            </ul>
         </nav>
-      </header>
+    </header>
     <div id="container">
         <h1>Profile Information</h1>
         <div id="data-display">
@@ -28,22 +28,14 @@
             <p><span class="label">Age:</span> <span class="value">{{ age }}</span></p>
             <p><span class="label">Weight:</span> <span class="value">{{ weight }} kg</span></p>
             <p><span class="label">Height:</span> <span class="value">{{ height }} cm</span></p>
-            <p><span class="label">BMI:</span> <span class="value">{{ bmi }}</span></p> <!-- Add BMI -->
+            <p><span class="label">BMI:</span> <span class="value">{{ bmi }}</span></p>
         </div>
-        
-        
+
         <button id="edit-button" onclick="toggleEditForm()">Edit</button>
 
-        <form id="edit-form">
+        <form id="edit-form" style="display: none;" method="POST">
+            {% csrf_token %}
             <h2>Edit Your Details</h2>
-            <div class="input-group">
-                <label for="edit-name">Name:</label>
-                <input type="text" id="edit-name" name="name" value="{{ name }}" required>
-            </div>
-            <div class="input-group">
-                <label for="edit-email">Email:</label>
-                <input type="email" id="edit-email" name="email" value="{{ email }}" required>
-            </div>
             <div class="input-group">
                 <label for="edit-age">Age:</label>
                 <input type="number" id="edit-age" name="age" value="{{ age }}" required>
@@ -60,49 +52,20 @@
                 <button type="button" onclick="updateData()">Update</button>
             </div>
         </form>
-        
     </div>
 
     <script>
-        const data = {
-            name: "{{ name|escapejs }}",
-            email: "{{ email|escapejs }}",
-            age: "{{ age|escapejs }}",
-            weight: "{{ weight|escapejs }}",
-            height: "{{ height|escapejs }}",
-            bmi: "{{ bmi|escapejs }}",  
-        };
-        
-        const displayData = () => {
-            const displayDiv = document.getElementById('data-display');
-            displayDiv.innerHTML = `
-                <p><span class="label">Username:</span> <span class="value">${data.name}</span></p>
-                <p><span class="label">Email:</span> <span class="value">${data.email}</span></p>
-                <p><span class="label">Age:</span> <span class="value">${data.age}</span></p>
-                <p><span class="label">Weight:</span> <span class="value">${data.weight} kg</span></p>
-                <p><span class="label">Height:</span> <span class="value">${data.height} cm</span></p>
-                <p><span class="label">BMI:</span> <span class="value">${data.bmi}</span></p>
-            `;
-
-            document.getElementById('edit-name').value = data.name;
-            document.getElementById('edit-email').value = data.email;
-            document.getElementById('edit-age').value = data.age;
-            document.getElementById('edit-weight').value = data.weight;
-            document.getElementById('edit-height').value = data.height;
-        };
-
         const toggleEditForm = () => {
             const form = document.getElementById('edit-form');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
         };
-        
 
         const updateData = () => {
-            data.name = document.getElementById('edit-name').value;
-            data.email = document.getElementById('edit-email').value;
-            data.age = document.getElementById('edit-age').value;
-            data.weight = document.getElementById('edit-weight').value;
-            data.height = document.getElementById('edit-height').value;
+            const data = {
+                age: document.getElementById('edit-age').value,
+                weight: document.getElementById('edit-weight').value,
+                height: document.getElementById('edit-height').value,
+            };
 
             fetch('/update-profile/', {
                 method: 'POST',
@@ -112,172 +75,110 @@
                 },
                 body: JSON.stringify(data),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(result => {
                 if (result.message) {
                     alert(result.message);
-                    displayData();
-                    document.getElementById('edit-form').style.display = 'none';
+                    location.reload(); // Reload to show updated data
                 } else {
                     alert('Error updating profile!');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
             });
         };
-
-        displayData();
     </script>
 </body>
 </html>
+
 <style>
     body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to bottom, #fcfaf0, #eae8dc);
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
         min-height: 100vh;
-        margin: 0;
-        {% comment %} background-color: #FCFAEE; {% endcomment %}
-        background: linear-gradient(to bottom, #fcfaf0, #eae8dc);
-        font-family: 'Poppins', sans-serif;
     }
+
     header {
         position: fixed;
-        left: 0;
         top: 0;
         width: 100%;
-        z-index: 1;
-        padding: 8px;
-        background-color: rgba(0, 0, 0, 0.5); 
-        backdrop-filter: blur(5px); 
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        z-index: 10;
     }
-    
-  
-      header .navbar {
+
+    .navbar {
         max-width: 1280px;
-        margin: 0 auto;
+        margin: auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-      }
-  
-      .navbar .logo img {
-        width: 50px;
-        height: auto;
-      }
-  
-      .navbar .menu-links {
-        display: flex;
-        align-items: center;
-        list-style: none;
-        gap: 30px;
-      }
-  
-      .navbar .menu-links li a {
-        color: #fff;
-        font-weight: 500;
-        text-decoration: none;
-        transition: 0.2s ease;
-      }
-  
-      .navbar .menu-links .join-btn a {
-        border: 1px solid #fff;
-        padding: 8px 15px;
-        border-radius: 4px;
-      }
-      .label {
-        color: #384B70;
-        font-weight: bold; 
     }
 
-    .value {
-        color: #3A5876; 
+    .navbar .logo img {
+        width: 50px;
+    }
+
+    .menu-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+    }
+
+    .menu-links li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
     }
 
     #container {
-        width: 80%;
-        max-width: 600px;
-        background-color: #FCFAEE;
+        margin-top: 80px;
+        background: white;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
+        width: 80%;
+        max-width: 600px;
     }
-   
 
     #edit-form {
-        display: none;
-        background-color: #FCFAEE;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 100%;
-        margin: 20px auto; /* Center the form */
+        margin-top: 20px;
     }
-    
-    #edit-form h2 {
-        text-align: center;
-        font-size: 28px;
-        font-weight: 700;
-        color: #B8001F;
-        margin-bottom: 20px;
-    }
-    
-    {% comment %} #edit-form form {
 
-        flex-direction: column;
-    } {% endcomment %}
-    
-    #edit-form .input-group {
+    .input-group {
         margin-bottom: 15px;
+        text-align: left;
     }
-    
-    #edit-form .input-group label {
-        margin-bottom: 5px;
+
+    .input-group label {
+        display: block;
         font-weight: bold;
-        color: #384B70;
-        display: block; /* Ensure labels are above inputs */
+        margin-bottom: 5px;
     }
-    
-    #edit-form .input-group input {
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
+
+    .input-group input {
         width: 100%;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
     }
-    
-    #edit-form .input-group input:focus {
-        border-color: #507687;
-        box-shadow: 0 0 5px rgba(80, 118, 135, 0.5);
-        outline: none;
-    }
-    
-    #edit-form .button-wrapper {
-        text-align: center;
-    }
-    
-    #edit-form button {
-        background: linear-gradient(90deg, #507687, #3a5876);
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 14px;
-        transition: transform 0.2s, background-color 0.3s ease;
-    }
-    
-    #edit-form button:hover {
-        transform: scale(1.05);
-        background: linear-gradient(90deg, #3a5876, #507687);
-    }
-    
 
     button {
-        margin-top: 10px;
         padding: 10px 20px;
-        font-size: 16px;
         border: none;
         background: linear-gradient(90deg, #507687, #3a5876);
         color: white;
@@ -286,20 +187,6 @@
     }
 
     button:hover {
-        background-color: #3d2592;
+        background: #3d2592;
     }
-    
-
-    input {
-        width: 90%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    h1, h2 {
-        color: #B8001F;
-    }
-    
 </style>
