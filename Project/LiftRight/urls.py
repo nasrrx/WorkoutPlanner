@@ -1,5 +1,5 @@
 from django.urls import path
-from frontend import views
+from LiftRight import views
 urlpatterns = [
     path('',views.RenderLoginView,name='LogIn'),
     path('SignUp',views.RenderSignUpView,name='SignUp'),
