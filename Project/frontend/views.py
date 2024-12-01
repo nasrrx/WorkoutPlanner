@@ -98,8 +98,6 @@ def update_profile(request):
 
             # Access the user directly and update fields
             user = request.user
-            user.username = data.get('name', user.username)
-            user.email = data.get('email', user.email)
 
             # Assuming `age`, `weight`, and `height` are custom fields added to the User model
             if hasattr(user, 'age'):
