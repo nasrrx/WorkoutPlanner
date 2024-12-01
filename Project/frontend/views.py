@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-def signup_view(request): # 
+def RenderSignUpView(request): # 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -19,7 +19,7 @@ def signup_view(request): #
         form = CustomUserCreationForm()
     return render(request, 'SignUp.html', {'form': form})
 
-def login_view(request):
+def RenderLoginView(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -30,24 +30,12 @@ def login_view(request):
         form = CustomAuthenticationForm()
     return render(request, 'LogIn.html', {'form': form})
 
-def Home(request):
-    # Static data for testing
-    height = 170  # Example height in cm
-    weight = 70   # Example weight in kg
-
+def RenderHomePage(request):
     
-    height_m = height / 100  
-    bmi = round(weight / (height_m ** 2), 2) 
-
-    context = {
-        'bmi': bmi,
-        'height': height,
-        'weight': weight,
-    }
-    return render(request, 'Home.html', context)
+    return render(request, 'Home.html')
 
 @login_required
-def Profile(request):
+def LoadProfileUserData(request):
     user = request.user 
     
     bmi = CalculateBMI(user.height, user.weight)
@@ -62,7 +50,7 @@ def Profile(request):
     }
     return render(request, 'Profile.html', context)
 
-def About(request):
+def RenderAboutPage(request):
     return render(request,'About.html')
 
 def CalculateBMI(height, weight):
@@ -74,11 +62,11 @@ def download_workout_plan(request):
     # Logic to determine the workout plan based on user data
     bmi = CalculateBMI(request.user.height, request.user.weight)  # Assuming the user has a BMI field in their profile
     if bmi < 18.5:
-        filename = 'WorkoutPlan1_UnderWeightOrNormalBMI.txt'
+        filename = 'Muscle_Gain_Workout_Plan.pdf'
     elif bmi > 25:
-        filename = 'WorkoutPlan2_FatLoss.txt'
+        filename = 'Fat_Loss_Workout_Plan.pdf'
     else:
-        filename = 'WorkoutPlan1_UnderWeightOrNormalBMI.txt' 
+        filename = 'Muscle_Gain_Workout_Plan.pdf' 
 
     # Construct the file path
     file_path = os.path.join('WorkoutPlans', filename)  # Replace 'workout_plans' with the correct directory
