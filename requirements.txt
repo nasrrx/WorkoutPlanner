@@ -10,7 +10,6 @@ pytest>=7.2,<8.0         # General testing framework
 pytest-cov>=3.0,<4.0     # For test coverage reporting
 
 # Linter and formatting tools (optional, for code quality)
-flake8>=6.0,<7.0         # Latest compatible version
 black>=23.0,<24.0        # Updated for better Python 3.12 support
 
 # Coverage tools
