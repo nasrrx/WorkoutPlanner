@@ -8,7 +8,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-@pytest.mark.django_db
 def RenderSignUpView(request): # 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

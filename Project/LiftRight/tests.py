@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.test import Client
 from django.core.files.uploadedfile import SimpleUploadedFile
+import json
 
 # Get the custom user model
 User = get_user_model()
@@ -80,7 +81,7 @@ def test_load_profile_user_data(client, django_user_model):
     response = client.get(reverse('Profile'))
     assert response.status_code == 200
     assert 'Profile.html' in [t.name for t in response.templates]
-    assert response.context['bmi'] == 24.22  # BMI = weight / (height/100)^2
+    assert float(response.context['bmi']) == 24.22  # BMI = weight / (height/100)^2
 
 
 @pytest.mark.django_db

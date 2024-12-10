@@ -24,7 +24,3 @@ selenium>=4.10,<5.0      # Latest compatible version for Python 3.12
 
 # Environment variables (optional)
 python-dotenv>=1.0,<2.0  # For managing .env files easily
-
-[pytest]
-DJANGO_SETTINGS_MODULE = your_project.settings
-python_files = tests.py test_*.py *_tests.py
