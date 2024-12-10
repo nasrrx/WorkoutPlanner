@@ -1,12 +1,30 @@
 # Django Framework
-django>=3.2,<4.0  # Example: Django 3.2.x
+django>=3.2,<4.3  # Updated to include compatibility with Python 3.12
 
 # Database adapter for PostgreSQL
-psycopg2>=2.9.3,<3.0  # Remove if not using PostgreSQL
+psycopg2>=2.9.6,<3.0  # Updated to a newer version for Python 3.12 compatibility
 
 # Testing framework
-pytest-django>=4.5,<5.0
+pytest-django>=4.5,<5.1  # Updated for compatibility
+pytest>=7.2,<8.0         # General testing framework
+pytest-cov>=3.0,<4.0     # For test coverage reporting
 
 # Linter and formatting tools (optional, for code quality)
-flake8>=3.9,<4.0
-black>=22.1,<23.0
+flake8>=6.0,<7.0         # Latest compatible version
+black>=23.0,<24.0        # Updated for better Python 3.12 support
+
+# Coverage tools
+coverage>=6.5,<7.0       # For detailed coverage reports
+
+# Factory Boy for test data
+factory-boy>=3.2,<4.0    # Optional, for creating test data easily
+
+# Selenium for browser testing (optional)
+selenium>=4.10,<5.0      # Latest compatible version for Python 3.12
+
+# Environment variables (optional)
+python-dotenv>=1.0,<2.0  # For managing .env files easily
+
+[pytest]
+DJANGO_SETTINGS_MODULE = your_project.settings
+python_files = tests.py test_*.py *_tests.py
