@@ -1,9 +1,6 @@
 # Django Framework
 Django>=3.2,<5.2  # Supports Python 3.7 to 3.13
 
-# Database adapter for PostgreSQL
-psycopg2>=2.9.6,<3.0  # Compatible with Python 3.7+
-
 # Testing Frameworks
 pytest>=7.2,<8.0  # Compatible with Python 3.7 to 3.13
 pytest-django>=4.5,<5.1  # Compatible with Django and Python 3.7+
