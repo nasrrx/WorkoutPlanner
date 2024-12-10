@@ -29,6 +29,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Set Environment Variables
+        run: |
+          export DJANGO_SETTINGS_MODULE=Project.settings
+          export PYTHONPATH=$PWD
+
       - name: Run Tests
+        working-directory: ./Project
         run: |
           pytest --disable-warnings
