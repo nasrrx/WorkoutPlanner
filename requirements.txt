@@ -1,12 +1,23 @@
 # Django Framework
-django>=3.2,<4.0  # Example: Django 3.2.x
+Django>=3.2,<5.2  # Supports Python 3.7 to 3.13
 
-# Database adapter for PostgreSQL
-psycopg2>=2.9.3,<3.0  # Remove if not using PostgreSQL
+# Testing Frameworks
+pytest>=7.2,<8.0  # Compatible with Python 3.7 to 3.13
+pytest-django>=4.5,<5.1  # Compatible with Django and Python 3.7+
+pytest-cov>=3.0,<4.0  # Test coverage tool for pytest
 
-# Testing framework
-pytest-django>=4.5,<5.0
+# Code Quality Tools
+black>=22.3,<24.0  # Compatible with Python 3.7+
+flake8>=3.9,<7.0  # Linter for Python 3.7+
 
-# Linter and formatting tools (optional, for code quality)
-flake8>=3.9,<4.0
-black>=22.1,<23.0
+# Coverage Reporting
+coverage>=6.5,<7.0  # Compatible with pytest-cov and Python 3.7+
+
+# Testing Factories
+factory-boy>=3.2,<4.0  # Create test data for Python 3.7+
+
+# Selenium for Browser Testing
+selenium>=4.10,<5.0  # Browser automation for Python 3.7+
+
+# Environment Variables
+python-dotenv>=0.20,<2.0  # Manage environment variables for Python 3.7+
