@@ -1,25 +1,26 @@
 # Django Framework
-django>=3.2,<4.3  # Updated to include compatibility with Python 3.12
+Django>=3.2,<5.2  # Supports Python 3.7 to 3.13
 
 # Database adapter for PostgreSQL
-psycopg2>=2.9.6,<3.0  # Updated to a newer version for Python 3.12 compatibility
+psycopg2>=2.9.6,<3.0  # Compatible with Python 3.7+
 
-# Testing framework
-pytest-django>=4.5,<5.1  # Updated for compatibility
-pytest>=7.2,<8.0         # General testing framework
-pytest-cov>=3.0,<4.0     # For test coverage reporting
+# Testing Frameworks
+pytest>=7.2,<8.0  # Compatible with Python 3.7 to 3.13
+pytest-django>=4.5,<5.1  # Compatible with Django and Python 3.7+
+pytest-cov>=3.0,<4.0  # Test coverage tool for pytest
 
-# Linter and formatting tools (optional, for code quality)
-black>=23.0,<24.0        # Updated for better Python 3.12 support
+# Code Quality Tools
+black>=22.3,<24.0  # Compatible with Python 3.7+
+flake8>=3.9,<7.0  # Linter for Python 3.7+
 
-# Coverage tools
-coverage>=6.5,<7.0       # For detailed coverage reports
+# Coverage Reporting
+coverage>=6.5,<7.0  # Compatible with pytest-cov and Python 3.7+
 
-# Factory Boy for test data
-factory-boy>=3.2,<4.0    # Optional, for creating test data easily
+# Testing Factories
+factory-boy>=3.2,<4.0  # Create test data for Python 3.7+
 
-# Selenium for browser testing (optional)
-selenium>=4.10,<5.0      # Latest compatible version for Python 3.12
+# Selenium for Browser Testing
+selenium>=4.10,<5.0  # Browser automation for Python 3.7+
 
-# Environment variables (optional)
-python-dotenv>=1.0,<2.0  # For managing .env files easily
+# Environment Variables
+python-dotenv>=0.20,<2.0  # Manage environment variables for Python 3.7+
