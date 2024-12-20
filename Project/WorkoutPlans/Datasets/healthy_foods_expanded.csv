@@ -1,0 +1,19 @@
+Food Item,Category,Calories (per 100g),Protein (g),Fats (g),Carbs (g),Description
+Chicken Breast,Protein,165,31.0,3.6,0.0,Lean source of protein.
+Salmon,Protein,206,20.0,13.0,0.0,Fatty fish high in Omega-3.
+Quinoa,Carbohydrate,120,4.0,2.0,21.0,"High-fiber grain, complete protein."
+Brown Rice,Carbohydrate,112,2.6,0.9,23.0,Rich in energy and fiber.
+Broccoli,Vegetable,55,3.7,0.6,11.0,Low-calorie vegetable rich in vitamins.
+Spinach,Vegetable,23,2.9,0.4,3.6,Leafy green high in iron.
+Almonds,Fat,579,21.0,50.0,22.0,Rich source of healthy fats.
+Eggs,Protein,155,13.0,11.0,1.1,High-quality protein source.
+Sweet Potato,Carbohydrate,86,2.0,0.1,20.0,Good source of complex carbohydrates.
+Greek Yogurt,Protein,59,10.0,0.4,3.6,Rich in protein and probiotics.
+Avocado,Fat,160,2.0,15.0,9.0,Rich in healthy monounsaturated fats.
+Oats,Carbohydrate,389,16.0,7.0,66.0,High in fiber and a great breakfast option.
+Cod,Protein,82,18.0,0.7,0.0,Lean fish rich in protein and low in fat.
+Tofu,Protein,76,8.0,4.8,1.9,Plant-based protein source.
+Kale,Vegetable,35,2.9,0.5,4.4,Leafy green high in antioxidants.
+Peanut Butter,Fat,588,25.0,50.0,20.0,Rich in protein and healthy fats.
+Apples,Carbohydrate,52,0.3,0.2,14.0,Low-calorie fruit rich in fiber.
+Cottage Cheese,Protein,98,11.0,4.3,3.4,Low-fat dairy product high in protein.
