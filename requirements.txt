@@ -21,3 +21,6 @@ selenium>=4.10,<5.0  # Browser automation for Python 3.7+
 
 # Environment Variables
 python-dotenv>=0.20,<2.0  # Manage environment variables for Python 3.7+
+
+reportlab==3.6.12
+
