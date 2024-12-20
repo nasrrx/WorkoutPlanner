@@ -12,14 +12,22 @@ class User(AbstractUser):
         choices=[
             ('gain muscle', 'Gain Muscle'),
             ('lose fat', 'Lose Fat'),
-            ('body recomposition', 'Body Recomposition'),
-            ('endurance', 'Endurance'),
-            ('strength', 'Strength')
         ],
         null=True,
         blank=True
     )
     body_fat_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    plan_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('full_body', '3-Day Full Body'),
+            ('upper_lower', '4-Day Upper/Lower'),
+            ('push_pull_legs', '6-Day Push/Pull/Legs'),
+        ],
+        default='full_body',  # Set a default plan type
+        null=True,
+        blank=True
+    )
 
 # Exercise model
 class Exercise(models.Model):

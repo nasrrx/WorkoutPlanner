@@ -8,7 +8,7 @@ import os
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .utils import generate_pdf, create_workout_plan, create_diet_plan, recommend_diet_and_workout
+from .utils import generate_pdf, calculate_bmi, read_exercises_from_csv, read_food_items_from_csv
 
 def RenderSignUpView(request):
     if request.method == 'POST':
@@ -35,16 +35,13 @@ def RenderLoginView(request):
 def RenderHomePage(request):
     return render(request, 'Home.html')
 
+def RenderAboutPage(request):
+    return render(request, 'About.html')
+    
 @login_required
 def LoadProfileUserData(request):
     user = request.user
-
-    # Generate workout and diet plan on profile load
-    workout_plan = create_workout_plan(user)
-    diet_plan = create_diet_plan(user)
-
-    pdf_path = generate_pdf(user)  # Generate and save PDF
-
+    
     context = {
         'name': user.username,
         'email': user.email,
@@ -53,10 +50,8 @@ def LoadProfileUserData(request):
         'weight': user.weight,
         'gender': user.gender,
         'goal': user.goal,
-        'bmi': recommend_diet_and_workout(user)['bmi'],
-        'diet_plan': diet_plan,
-        'workout_plan': workout_plan,
-        'pdf_path': pdf_path
+        'body_fat_percentage': user.body_fat_percentage,
+        'bmi': calculate_bmi(user.height, user.weight, user.age, user.gender)
     }
 
     return render(request, 'Profile.html', context)
@@ -64,6 +59,26 @@ def LoadProfileUserData(request):
 @csrf_exempt
 @login_required
 def update_profile(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user = request.user
+
+            # Update user data, including plan_type
+            user.plan_type = data.get('plan_type', user.plan_type)
+            user.age = data.get('age', user.age)
+            user.weight = data.get('weight', user.weight)
+            user.height = data.get('height', user.height)
+            user.gender = data.get('gender', user.gender)
+            user.goal = data.get('goal', user.goal)
+            user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
+            user.save()
+
+            return JsonResponse({'message': 'Profile updated successfully'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -78,11 +93,6 @@ def update_profile(request):
             user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
             user.save()
 
-            # Regenerate plans and PDF
-            create_workout_plan(user)
-            create_diet_plan(user)
-            generate_pdf(user)
-
             return JsonResponse({'message': 'Profile updated successfully'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -91,16 +101,31 @@ def update_profile(request):
 
 @login_required
 def download_workout_plan(request):
-    """Serve the user's workout plan PDF for download."""
-    user = request.user
-    workout_plan = WorkoutPlan.objects.filter(user=user).last()
+    """Generate and serve the user's workout plan as a PDF."""
+    try:
+        return generate_pdf(request.user)
+    except ValueError as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
-    if workout_plan and workout_plan.pdf_path:
-        pdf_path = os.path.join(settings.MEDIA_ROOT, workout_plan.pdf_path)
-        if os.path.exists(pdf_path):
-            with open(pdf_path, 'rb') as pdf:
-                response = HttpResponse(pdf.read(), content_type='application/pdf')
-                response['Content-Disposition'] = f'attachment; filename="{os.path.basename(pdf_path)}"'
-                return response
+    """Generate and serve a PDF with exercises and food items."""
+    try:
+        # Read exercises and food items
+        exercises = read_exercises_from_csv()
+        food_items = read_food_items_from_csv()
 
-    return JsonResponse({'error': 'Workout plan not found or PDF missing.'}, status=404)
+        # Generate the PDF
+        response = generate_pdf(exercises, food_items)
+        return response
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    try:
+        # Read exercises and food items
+        exercises = read_exercises_from_csv()
+        food_items = read_food_items_from_csv()
+
+        # Generate the PDF
+        response = generate_pdf(exercises, food_items)
+        return response
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

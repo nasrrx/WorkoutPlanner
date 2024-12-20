@@ -1,8 +1,14 @@
 import os
+import csv
+from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from django.conf import settings
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from django.shortcuts import render
 from .models import WorkoutPlan, Exercise, DietPlan
+
 
 # Utility functions
 
@@ -13,110 +19,168 @@ def calculate_bmi(height, weight, age, gender):
 
     # Adjust BMI based on age and gender
     if gender == 'male':
-        age_adjustment = 0.1 * (age / 10)
+        age_adjustment = float(0.1 * (age / 10))
     else:  # female
-        age_adjustment = 0.15 * (age / 10)
+        age_adjustment = float(0.15 * (age / 10))
 
-    adjusted_bmi = base_bmi + age_adjustment
-    return round(adjusted_bmi, 2)
+    adjusted_bmi = float(base_bmi) + float(age_adjustment)
+    
+    return float(round(adjusted_bmi, 2))
 
-def recommend_diet_and_workout(user):
-    """Determine the appropriate diet and workout plan based on BMI and goals."""
-    bmi = calculate_bmi(user.height, user.weight, user.age, user.gender)
-    recommendations = {
-        "diet_plan": None,
-        "workout_plan": None,
-        "guidelines": [],
-        "bmi": bmi
+def generate_full_body_plan():
+    """Generate a 3-day full-body workout plan from the dataset."""
+    exercises = read_exercises_from_csv()
+    # Example logic for Full Body (adjust days and muscles as needed)
+    plan = {
+        "Day 1": [ex for ex in exercises if ex['name'] in ['Squat', 'Bench Press', 'Deadlift']],
+        "Day 2": [ex for ex in exercises if ex['name'] in ['Pull-Up', 'Overhead Press', 'Lunges']],
+        "Day 3": [ex for ex in exercises if ex['name'] in ['Barbell Row', 'Plank', 'Push-Up']],
     }
+    return plan
 
-    if bmi > 25:
-        if user.body_fat_percentage and user.body_fat_percentage > 20:
-            recommendations["diet_plan"] = "Weight Loss Diet Plan"
-            recommendations["workout_plan"] = "Cardio 4 hours per week"
-            recommendations["guidelines"].extend([
-                "Include walking, cycling, or swimming as cardio activities.",
-                "Focus on a calorie deficit with a high-protein diet."
-            ])
-    elif bmi < 18:
-        recommendations["diet_plan"] = "Weight Gain Diet Plan"
-        recommendations["workout_plan"] = "Intense Weight Lifting"
-        recommendations["guidelines"].extend([
-            "Focus on compound exercises like squats, bench press, and deadlifts.",
-            "Eat in a calorie surplus with high-protein and carb intake."
-        ])
-    else:
-        recommendations["diet_plan"] = f"{user.goal.capitalize()} Diet Plan"
-        recommendations["workout_plan"] = f"{user.goal.capitalize()} Workout Plan"
-        recommendations["guidelines"].append("Follow a balanced approach aligned with your goals.")
+def generate_upper_lower_split():
+    """Generate a 4-day Upper/Lower workout split."""
+    exercises = read_exercises_from_csv()
+    plan = {
+        "Day 1 (Upper)": [ex for ex in exercises if ex['Target Muscle'] in ['Chest', 'Back', 'Shoulders', 'Arms']],
+        "Day 2 (Lower)": [ex for ex in exercises if ex['Target Muscle'] in ['Legs']],
+        "Day 3 (Upper)": [ex for ex in exercises if ex['Target Muscle'] in ['Chest', 'Back', 'Shoulders', 'Arms']],
+        "Day 4 (Lower)": [ex for ex in exercises if ex['Target Muscle'] in ['Legs']],
+    }
+    return plan
 
-    return recommendations
+def generate_push_pull_legs():
+    """Generate a 6-day Push/Pull/Legs workout split."""
+    exercises = read_exercises_from_csv()
+    plan = {
+        "Day 1 (Push)": [ex for ex in exercises if ex['Target Muscle'] in ['Chest', 'Shoulders', 'Triceps']],
+        "Day 2 (Pull)": [ex for ex in exercises if ex['Target Muscle'] in ['Back', 'Biceps']],
+        "Day 3 (Legs)": [ex for ex in exercises if ex['Target Muscle'] in ['Legs']],
+        "Day 4 (Push)": [ex for ex in exercises if ex['Target Muscle'] in ['Chest', 'Shoulders', 'Triceps']],
+        "Day 5 (Pull)": [ex for ex in exercises if ex['Target Muscle'] in ['Back', 'Biceps']],
+        "Day 6 (Legs)": [ex for ex in exercises if ex['Target Muscle'] in ['Legs']],
+    }
+    return plan
 
-def generate_pdf(user):
-    """Generate a PDF report for the user's workout and diet plan and save it in the MEDIA directory."""
-    recommendations = recommend_diet_and_workout(user)
-    relative_path = f"WorkoutPlans/{user.username}_plan.pdf"
-    pdf_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+# Read exercises from CSV
+def read_exercises_from_csv():
+    exercises = []
+    with open('C:/Users/nasrr/Desktop/Workout Planner/WorkoutPlanner/Project/WorkoutPlans/Datasets/exercises_expanded.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            exercises.append({
+                'name': row['Exercise'],  # Match the column name
+                'sets': int(row['Sets']),
+                'reps': int(row['Reps']),
+                'calories_burned': 0,  # Add calculation if needed
+            })
+    return exercises
 
-    # Ensure directory exists
-    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+# Read food items from CSV
 
-    c = canvas.Canvas(pdf_path, pagesize=letter)
+    food_items = []
+    with open('WorkoutPlans/Datasets/healthy_foods_expanded.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            food_items.append({
+                'food_item': row['food_item'],
+                'calories_per_serving': int(row['calories_per_serving']),
+            })
+    return food_items
+
+def read_food_items_from_csv():
+    food_items = []
+    with open('C:/Users/nasrr/Desktop/Workout Planner/WorkoutPlanner/Project/WorkoutPlans/Datasets/healthy_foods_expanded.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            food_items.append({
+                'food_item': row['Food Item'],  # Match the column name
+                'calories_per_serving': int(row['Calories (per 100g)']),  # Match column name
+            })
+    return food_items
+
+# Generate PDF function
+def generate_pdf(exercises, food_items):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
 
     # Title
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(100, 750, f"Workout and Diet Plan for {user.username}")
+    c.setFont("Helvetica", 16)
+    c.drawString(100, 750, "Workout Plan and Food Plan")
 
-    # BMI and Basic Info
+    # Exercises section
     c.setFont("Helvetica", 12)
-    c.drawString(100, 720, f"BMI: {recommendations['bmi']}")
-    c.drawString(100, 700, f"Goal: {user.goal}")
+    c.drawString(100, 720, "Exercises:")
+    y_position = 700
+    for exercise in exercises:
+        text = f"{exercise['name']} - {exercise['sets']} sets of {exercise['reps']} reps, Burned {exercise['calories_burned']} calories"
+        c.drawString(100, y_position, text)
+        y_position -= 20
 
-    # Diet Plan
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 670, "Diet Plan:")
+    # Food Items section
     c.setFont("Helvetica", 12)
-    c.drawString(120, 650, recommendations["diet_plan"])
+    c.drawString(100, y_position - 20, "Food Items and Calories:")
+    y_position -= 40
+    for food in food_items:
+        c.drawString(100, y_position, f"{food['food_item']}: {food['calories_per_serving']} calories per serving")
+        y_position -= 20
 
-    # Guidelines
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, 620, "Guidelines:")
-    c.setFont("Helvetica", 12)
-    y = 600
-    for guideline in recommendations["guidelines"]:
-        c.drawString(120, y, f"- {guideline}")
-        y -= 20
-
-    # Workout Plan
-    c.setFont("Helvetica-Bold", 14)
-    c.drawString(100, y - 20, "Workout Plan:")
-    c.setFont("Helvetica", 12)
-    y -= 40
-    c.drawString(120, y, recommendations["workout_plan"])
-
-    # Save PDF
+    # Save the PDF to the buffer
     c.save()
 
-    # Save relative path to the workout plan
-    workout_plan = WorkoutPlan.objects.filter(user=user).last()
-    if workout_plan:
-        workout_plan.pdf_path = relative_path
-        workout_plan.save()
+    # Create a response to return the PDF file
+    buffer.seek(0)
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = 'attachment; filename="workout_and_food_plan.pdf"'
+    response.write(buffer.getvalue())
+    return response
 
-    return relative_path
+# Django view to call the generate_pdf function
+def generate_workout_and_food_pdf(request):
+    # Read exercises and food items from CSV files
+    exercises = read_exercises_from_csv()
+    food_items = read_food_items_from_csv()
 
-def create_workout_plan(user):
-    """Create a workout plan based on recommendations."""
-    recommendations = recommend_diet_and_workout(user)
-    workout_plan = WorkoutPlan.objects.create(
-        user=user,
-        goal=recommendations["workout_plan"],
-        days_per_week=5 if "Weight Lifting" in recommendations["workout_plan"] else 3,
-        duration_weeks=8
-    )
-    return workout_plan
+    # Generate the PDF with the read data
+    return generate_pdf(exercises, food_items)
 
-def create_diet_plan(user):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+
+    # Title
+    c.setFont("Helvetica", 16)
+    c.drawString(100, 750, "Workout Plan and Diet Plan")
+
+    # Exercises section
+    c.setFont("Helvetica", 12)
+    c.drawString(100, 720, "Exercises:")
+    y_position = 700
+    for exercise in exercises:
+        text = f"{exercise['name']} - {exercise.get('sets', '')} sets"
+        if "reps" in exercise:
+            text += f" of {exercise.get('reps', '')} reps"
+        elif "seconds" in exercise:
+            text += f" of {exercise.get('seconds', '')} seconds"
+        c.drawString(100, y_position, text)
+        y_position -= 20
+
+    # Diet Plan section
+    c.setFont("Helvetica", 12)
+    c.drawString(100, y_position - 20, "Diet Plan:")
+    y_position -= 40
+    for meal in diet_plans:
+        c.drawString(100, y_position, f"{meal['meal']}: {meal['food']}")
+        y_position -= 20
+
+    # Save the PDF to the buffer
+    c.save()
+
+    # Create a response to return the PDF file
+    buffer.seek(0)
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = 'attachment; filename="workout_and_diet_plan.pdf"'
+    response.write(buffer.getvalue())
+    return response
     """Create a diet plan based on recommendations."""
     recommendations = recommend_diet_and_workout(user)
     return {
