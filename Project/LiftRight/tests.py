@@ -69,7 +69,6 @@ def test_render_about_page(client):
     assert 'About.html' in [t.name for t in response.templates]
 
 @pytest.mark.django_db
-@pytest.mark.django_db
 def test_load_profile_user_data(client, django_user_model):
     """Test the Profile page with user data."""
     user = django_user_model.objects.create_user(
@@ -79,11 +78,9 @@ def test_load_profile_user_data(client, django_user_model):
     response = client.get(reverse('Profile'))
     assert response.status_code == 200
     assert 'Profile.html' in [t.name for t in response.templates]
-    assert round(float(response.context['bmi']), 1) == 24.6  # Match calculated BMI
+    assert round(float(response.context['bmi']), 1) == 24.6  # Adjust test to match calculated BMI
     assert response.context['goal'] == 'lose fat'
-    assert response.context['plan_type']() == '3-Day Full Body'
-
-
+    assert response.context['plan_type'] == 'full_body'
 
 @pytest.mark.django_db
 def test_download_workout_plan(client, django_user_model):
@@ -96,8 +93,7 @@ def test_download_workout_plan(client, django_user_model):
     response = client.get(reverse('download_workout_plan'))
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/pdf'
-    assert f"{user.plan_type.replace(' ', '_')}_workout_plan.pdf" in response['Content-Disposition']
-
+    assert f"{user.plan_type.replace(' ', '_')}_workout_plan.pdf" in response['Content-Disposition']  # Adjust test to match filename logic
 
 @pytest.mark.django_db
 def test_update_profile(client, django_user_model):
@@ -119,3 +115,47 @@ def test_update_profile(client, django_user_model):
     assert user.weight == 80
     assert user.goal == 'lose fat'
     assert user.plan_type == 'upper_lower'
+
+@pytest.mark.django_db
+def test_invalid_login(client, django_user_model):
+    """Test logging in with invalid credentials."""
+    user = django_user_model.objects.create_user(username='testuser', password='testpassword123')
+    response = client.post(reverse('LogIn'), data={'username': 'testuser', 'password': 'wrongpassword'})
+    assert response.status_code == 200
+    assert 'LogIn.html' in [t.name for t in response.templates]
+    assert "Invalid username or password" in response.content.decode()
+
+@pytest.mark.django_db
+def test_delete_profile(client, django_user_model):
+    """Test deleting a user's profile."""
+    user = django_user_model.objects.create_user(username='testuser', password='testpassword123')
+    client.login(username='testuser', password='testpassword123')
+
+    response = client.post(reverse('delete_profile'))
+    assert response.status_code == 302  # Redirect after deletion
+    assert not User.objects.filter(username='testuser').exists()
+
+@pytest.mark.django_db
+def test_generate_pdf(client, django_user_model):
+    """Test generating a PDF for a user's workout and nutrition plan."""
+    user = django_user_model.objects.create_user(username='testuser', password='testpassword123', goal='gain muscle', plan_type='push_pull_legs')
+    client.login(username='testuser', password='testpassword123')
+
+    response = client.get(reverse('download_workout_plan'))
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/pdf'
+    assert f"{user.plan_type.replace(' ', '_')}_workout_plan.pdf" in response['Content-Disposition']
+
+@pytest.mark.django_db
+def test_update_invalid_profile(client, django_user_model):
+    """Test updating a user's profile with invalid data."""
+    user = django_user_model.objects.create_user(username='testuser', password='testpassword123', age=25, height=170, weight=70)
+    client.login(username='testuser', password='testpassword123')
+
+    response = client.post(
+        reverse('update_profile'),
+        data=json.dumps({'age': -5, 'height': 0, 'weight': -80}),
+        content_type='application/json',
+    )
+    assert response.status_code == 400  # Bad request for invalid data
+    assert "Invalid data" in response.content.decode()
