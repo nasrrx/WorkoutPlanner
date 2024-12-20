@@ -31,7 +31,8 @@
             <p><span class="label">Height:</span> <span class="value">{{ height }} cm</span></p>
             <p><span class="label">Gender:</span> <span class="value">{{ gender }}</span></p>
             <p><span class="label">Goal:</span> <span class="value">{{ goal }}</span></p>
-            <p><span class="label">Body Fat%:</span> <span class="value">{{ body_fat_percentage }}</span></p>
+            <p><span class="label">Plan Type:</span> <span class="value">{{ plan_type }}</span></p>
+            <p><span class="label">Body Fat %:</span> <span class="value">{{ body_fat_percentage }}</span></p>
             <p><span class="label">BMI:</span> <span class="value">{{ bmi }}</span></p>
         </div>
 
@@ -60,15 +61,22 @@
                 </select>
             </div>
             <div class="input-group">
-                <label for="edit-goal">Gender:</label>
+                <label for="edit-goal">Goal:</label>
                 <select id="edit-goal" name="goal">
                     <option value="gain muscle" {% if goal == 'gain muscle' %}selected{% endif %}>Gain Muscle</option>
                     <option value="lose fat" {% if goal == 'lose fat' %}selected{% endif %}>Lose Fat</option>
-                    <option value="body decomposition" {% if goal == 'body decomposition' %}selected{% endif %}>Body Decomposition</option>
-                    <option value="endurance" {% if goal == 'endurance' %}selected{% endif %}>Endurance</option>
-                    <option value="strength" {% if goal == 'strength' %}selected{% endif %}>Strength</option>
                 </select>
             </div>
+
+            <div class="input-group">
+                <label for="edit-plan_type">Workout Plan Type:</label>
+                <select id="edit-plan_type" name="plan_type">
+                    <option value="full_body" {% if user.plan_type == 'full_body' %}selected{% endif %}>3-Day Full Body</option>
+                    <option value="upper_lower" {% if user.plan_type == 'upper_lower' %}selected{% endif %}>4-Day Upper/Lower</option>
+                    <option value="push_pull_legs" {% if user.plan_type == 'push_pull_legs' %}selected{% endif %}>6-Day Push/Pull/Legs</option>
+                </select>
+            </div>
+
             <div class="input-group">
                 <label for="edit-bodyfat">Body Fat%:</label>
                 <input type="number" id="edit-bodyfat" name="body_fat_percentage" value="{{ body_fat_percentage }}" required>
@@ -93,6 +101,7 @@
                 height: document.getElementById('edit-height').value,
                 gender: document.getElementById('edit-gender').value,
                 goal: document.getElementById('edit-goal').value,
+                plan_type: document.getElementById('edit-plan_type').value,
                 body_fat_percentage: document.getElementById('edit-bodyfat').value,
             };
 
