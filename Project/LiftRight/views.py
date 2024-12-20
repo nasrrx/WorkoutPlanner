@@ -51,6 +51,7 @@ def LoadProfileUserData(request):
         'gender': user.gender,
         'goal': user.goal,
         'body_fat_percentage': user.body_fat_percentage,
+        'plan_type': user.get_plan_type_display,
         'bmi': calculate_bmi(user.height, user.weight, user.age, user.gender)
     }
 
@@ -79,53 +80,17 @@ def update_profile(request):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            user = request.user
-
-            # Update user data
-            user.age = data.get('age', user.age)
-            user.weight = data.get('weight', user.weight)
-            user.height = data.get('height', user.height)
-            user.gender = data.get('gender', user.gender)
-            user.goal = data.get('goal', user.goal)
-            user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
-            user.save()
-
-            return JsonResponse({'message': 'Profile updated successfully'})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
 def download_workout_plan(request):
-    """Generate and serve the user's workout plan as a PDF."""
-    try:
-        return generate_pdf(request.user)
-    except ValueError as e:
-        return JsonResponse({'error': str(e)}, status=400)
+    # Get the current user
+    user = request.user
 
-    """Generate and serve a PDF with exercises and food items."""
-    try:
-        # Read exercises and food items
-        exercises = read_exercises_from_csv()
-        food_items = read_food_items_from_csv()
+    # Use the user's plan type as the default
+    plan_type = user.plan_type if user.plan_type else 'full_body'
 
-        # Generate the PDF
-        response = generate_pdf(exercises, food_items)
-        return response
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    # Read food items from the CSV file
+    food_items = read_food_items_from_csv()
 
-    try:
-        # Read exercises and food items
-        exercises = read_exercises_from_csv()
-        food_items = read_food_items_from_csv()
-
-        # Generate the PDF
-        response = generate_pdf(exercises, food_items)
-        return response
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    # Generate the PDF with the selected plan type
+    return generate_pdf(plan_type, food_items)

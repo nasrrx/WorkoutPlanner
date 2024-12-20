@@ -1,19 +1,36 @@
-Exercise,Target Muscle,Equipment,Sets,Reps,Rest Time (sec),Description
-Squat,Legs,Barbell,4,10,90,"Compound lift targeting quads, hamstrings, and glutes."
-Bench Press,Chest,Barbell,4,8,120,Chest-building exercise targeting pectorals.
-Deadlift,Back,Barbell,4,8,120,Full-body lift focusing on posterior chain.
-Pull-Up,Back,Pull-Up Bar,3,10,90,Bodyweight exercise for lats and biceps.
-Overhead Press,Shoulders,Barbell,3,8,90,Shoulder press targeting deltoids.
-Lunges,Legs,None,3,12,60,Bodyweight exercise for lower body and balance.
-Barbell Row,Back,Barbell,4,10,120,Back and lat builder with barbell.
-Plank,Core,None,3,60,60,Core stabilization exercise.
-Bicep Curl,Arms,Dumbbells,3,12,60,Isolated movement for biceps.
-Tricep Dips,Arms,Parallel Bars,3,12,60,Tricep-focused bodyweight exercise.
-Push-Up,Chest,None,3,15,60,Bodyweight exercise for chest and triceps.
-Lat Pulldown,Back,Machine,4,12,90,Machine-based exercise for lats.
-Calf Raises,Calves,None,3,20,30,Bodyweight exercise for calves.
-Leg Press,Legs,Machine,4,12,90,Machine-based exercise for quads.
-Side Plank,Core,None,3,45,30,Core exercise targeting obliques.
-Incline Bench Press,Chest,Barbell,4,8,120,Chest exercise focusing on upper pectorals.
-Seated Row,Back,Machine,4,12,90,Machine-based exercise for mid-back.
-Russian Twists,Core,None,3,30,60,Core exercise for obliques and abs.
+name,target_muscle,equipment,sets,reps,calories_burned
+Barbell Curl,Biceps,Barbell,3,12,50
+Dumbbell Hammer Curl,Biceps,Dumbbell,3,12,45
+Preacher Curl,Biceps,Preacher Bench,3,10,40
+Concentration Curl,Biceps,Dumbbell,3,10,35
+Tricep Pushdown,Triceps,Cable,3,12,40
+Overhead Dumbbell Extension,Triceps,Dumbbell,3,12,45
+Skull Crushers,Triceps,Barbell,3,10,50
+Dips,Triceps,Bodyweight,3,15,55
+Overhead Press,Shoulders,Barbell,3,10,60
+Lateral Raises,Shoulders,Dumbbell,3,12,40
+Front Raises,Shoulders,Dumbbell,3,12,45
+Arnold Press,Shoulders,Dumbbell,3,10,50
+Bench Press,Chest,Barbell,3,10,70
+Incline Dumbbell Press,Chest,Dumbbell,3,12,65
+Chest Fly,Chest,Dumbbell,3,12,60
+Push-Ups,Chest,Bodyweight,3,15,55
+Cable Crossovers,Chest,Cable,3,12,60
+Pull-Ups,Back,Bodyweight,3,10,60
+Barbell Row,Back,Barbell,3,12,65
+Lat Pulldown,Back,Cable,3,12,55
+Deadlift,Back,Barbell,3,8,80
+Dumbbell Rows,Back,Dumbbell,3,10,50
+Squats,Quads,Barbell,3,10,80
+Lunges,Quads,Bodyweight,3,12,60
+Leg Press,Quads,Machine,3,10,70
+Romanian Deadlift,Hamstrings,Barbell,3,10,70
+Leg Curl,Hamstrings,Machine,3,12,60
+Good Mornings,Hamstrings,Barbell,3,10,65
+Calf Raises,Calves,Bodyweight,3,15,40
+Seated Calf Raises,Calves,Machine,3,12,35
+Barbell Shrugs,Traps,Barbell,3,12,45
+Wrist Curls,Forearms,Barbell,3,15,30
+Running,Cardio,None,1,20,200
+Cycling,Cardio,None,1,30,300
+Jump Rope,Cardio,Rope,1,15,150
