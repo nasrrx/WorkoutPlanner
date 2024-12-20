@@ -20,6 +20,7 @@
             </ul>
         </nav>
     </header>
+
     <div id="container">
         <h1>Profile Information</h1>
         <div id="data-display">
@@ -28,6 +29,9 @@
             <p><span class="label">Age:</span> <span class="value">{{ age }}</span></p>
             <p><span class="label">Weight:</span> <span class="value">{{ weight }} kg</span></p>
             <p><span class="label">Height:</span> <span class="value">{{ height }} cm</span></p>
+            <p><span class="label">Gender:</span> <span class="value">{{ gender }}</span></p>
+            <p><span class="label">Goal:</span> <span class="value">{{ goal }}</span></p>
+            <p><span class="label">Body Fat%:</span> <span class="value">{{ body_fat_percentage }}</span></p>
             <p><span class="label">BMI:</span> <span class="value">{{ bmi }}</span></p>
         </div>
 
@@ -48,11 +52,33 @@
                 <label for="edit-height">Height (cm):</label>
                 <input type="number" id="edit-height" name="height" value="{{ height }}" required>
             </div>
+            <div class="input-group">
+                <label for="edit-gender">Gender:</label>
+                <select id="edit-gender" name="gender">
+                    <option value="male" {% if gender == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if gender == 'female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="edit-goal">Gender:</label>
+                <select id="edit-goal" name="goal">
+                    <option value="gain muscle" {% if goal == 'gain muscle' %}selected{% endif %}>Gain Muscle</option>
+                    <option value="lose fat" {% if goal == 'lose fat' %}selected{% endif %}>Lose Fat</option>
+                    <option value="body decomposition" {% if goal == 'body decomposition' %}selected{% endif %}>Body Decomposition</option>
+                    <option value="endurance" {% if goal == 'endurance' %}selected{% endif %}>Endurance</option>
+                    <option value="strength" {% if goal == 'strength' %}selected{% endif %}>Strength</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="edit-bodyfat">Body Fat%:</label>
+                <input type="number" id="edit-bodyfat" name="body_fat_percentage" value="{{ body_fat_percentage }}" required>
+            </div>
             <div class="button-wrapper">
                 <button type="button" onclick="updateData()">Update</button>
             </div>
         </form>
     </div>
+    
 
     <script>
         const toggleEditForm = () => {
@@ -65,6 +91,9 @@
                 age: document.getElementById('edit-age').value,
                 weight: document.getElementById('edit-weight').value,
                 height: document.getElementById('edit-height').value,
+                gender: document.getElementById('edit-gender').value,
+                goal: document.getElementById('edit-goal').value,
+                body_fat_percentage: document.getElementById('edit-bodyfat').value,
             };
 
             fetch('/update-profile/', {
@@ -100,85 +129,164 @@
 
 <style>
     body {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(to bottom, #fcfaf0, #eae8dc);
         display: flex;
         justify-content: center;
         align-items: center;
-        flex-direction: column;
         min-height: 100vh;
+        margin: 0;
+        {% comment %} background-color: #FCFAEE; {% endcomment %}
+        background: linear-gradient(to bottom, #fcfaf0, #eae8dc);
+        font-family: 'Poppins', sans-serif;
     }
-
     header {
         position: fixed;
+        left: 0;
         top: 0;
         width: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 10px;
-        z-index: 10;
+        z-index: 1;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.5); 
+        backdrop-filter: blur(5px); 
     }
-
-    .navbar {
+    
+  
+      header .navbar {
         max-width: 1280px;
-        margin: auto;
+        margin: 0 auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-    }
-
-    .navbar .logo img {
+      }
+  
+      .navbar .logo img {
         width: 50px;
-    }
-
-    .menu-links {
-        list-style: none;
+        height: auto;
+      }
+  
+      .navbar .menu-links {
         display: flex;
-        gap: 20px;
+        align-items: center;
+        list-style: none;
+        gap: 30px;
+      }
+  
+      .navbar .menu-links li a {
+        color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.2s ease;
+      }
+  
+      .navbar .menu-links .join-btn a {
+        border: 1px solid #fff;
+        padding: 8px 15px;
+        border-radius: 4px;
+      }
+      .label {
+        color: #384B70;
+        font-weight: bold; 
     }
 
-    .menu-links li a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
+    .value {
+        color: #3A5876; 
     }
 
     #container {
-        margin-top: 80px;
-        background: white;
+        width: 80%;
+        max-width: 600px;
+        background-color: #FCFAEE;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
-        width: 80%;
-        max-width: 600px;
     }
+   
 
     #edit-form {
-        margin-top: 20px;
-    }
-
-    .input-group {
-        margin-bottom: 15px;
-        text-align: left;
-    }
-
-    .input-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .input-group input {
+        display: none;
+        background-color: #FCFAEE;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        margin: 20px auto; /* Center the form */
     }
+    
+    #edit-form h2 {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #B8001F;
+        margin-bottom: 20px;
+    }
+    
+    #edit-form .input-group {
+        margin-bottom: 15px;
+    }
+    
+    #edit-form .input-group label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #384B70;
+        display: block; /* Ensure labels are above inputs */
+    }
+    
+    #edit-form .input-group input {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 100%;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    #edit-form .input-group input:focus {
+        border-color: #507687;
+        box-shadow: 0 0 5px rgba(80, 118, 135, 0.5);
+        outline: none;
+    }
+    
+    #edit-form .button-wrapper {
+        text-align: center;
+    }
+    #edit-form .input-group select {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 100%;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    #edit-form .input-group select:focus {
+        border-color: #507687;
+        box-shadow: 0 0 5px rgba(80, 118, 135, 0.5);
+        outline: none;
+    }
+    
+    
+    #edit-form button {
+        background: linear-gradient(90deg, #507687, #3a5876);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 14px;
+        transition: transform 0.2s, background-color 0.3s ease;
+    }
+    
+    #edit-form button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(90deg, #3a5876, #507687);
+    }
+    
 
     button {
+        margin-top: 10px;
         padding: 10px 20px;
+        font-size: 16px;
         border: none;
         background: linear-gradient(90deg, #507687, #3a5876);
         color: white;
@@ -187,6 +295,19 @@
     }
 
     button:hover {
-        background: #3d2592;
+        background-color: #3d2592;
+    }
+    
+
+    input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    h1, h2 {
+        color: #B8001F;
     }
 </style>

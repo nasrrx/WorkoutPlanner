@@ -46,8 +46,13 @@ def LoadProfileUserData(request):
         'age': user.age,  
         'height': user.height,
         'weight': user.weight,
+        'gender': user.gender,
+        'goal': user.goal,
         'bmi': bmi,  
     }
+    if hasattr(user, 'body_fat_percentage') and user.body_fat_percentage:
+        context['body_fat_percentage'] = user.body_fat_percentage
+
     return render(request, 'Profile.html', context)
 
 def RenderAboutPage(request):
@@ -86,13 +91,15 @@ def update_profile(request):
 
             # Access the user directly and update fields
             user = request.user
+            
+            user.age = data.get('age', user.age)
+            user.weight = data.get('weight', user.weight)
+            user.height = data.get('height', user.height)
+            user.gender = data.get('gender', user.gender)
+            user.goal = data.get('goal', user.goal)
+            user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
 
-            if hasattr(user, 'age'):
-                user.age = data.get('age', user.age)
-            if hasattr(user, 'weight'):
-                user.weight = data.get('weight', user.weight)
-            if hasattr(user, 'height'):
-                user.height = data.get('height', user.height)
+      
 
             user.save()
             return JsonResponse({'message': 'Profile updated successfully'})
