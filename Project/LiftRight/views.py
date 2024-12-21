@@ -26,10 +26,16 @@ def RenderSignUpView(request):
 def RenderLoginView(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('Profile')
+        if form.is_valid():  # Form fields are valid
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user:  # Credentials are correct
+                login(request, user)
+                return redirect('Profile')
+            else:  # Credentials are incorrect
+                form.add_error(None, 'Invalid username or password.')  # Add a non-field error
+        # Even if form.is_valid() fails, errors will already be handled by the form itself
     else:
         form = CustomAuthenticationForm()
     return render(request, 'LogIn.html', {'form': form})
