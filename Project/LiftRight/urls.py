@@ -11,4 +11,5 @@ urlpatterns = [
     path('update-profile/', views.update_profile, name='update_profile'),
     # path('api/gyms', views.get_nearby_gyms, name='get_nearby_gyms'),
     # path('Gyms', views.find_gyms, name='FindGyms'),
+    path('logout/', views.logout_view, name='Logout'),
 ]

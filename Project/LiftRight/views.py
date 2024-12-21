@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse, HttpResponse
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from .models import User, WorkoutPlan
@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .utils import generate_pdf, calculate_bmi, read_exercises_from_csv, read_food_items_from_csv
 from django.http import JsonResponse
-from django.shortcuts import render
 
 def RenderSignUpView(request):
     if request.method == 'POST':
@@ -26,16 +25,10 @@ def RenderSignUpView(request):
 def RenderLoginView(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(data=request.POST)
-        if form.is_valid():  # Form fields are valid
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user:  # Credentials are correct
-                login(request, user)
-                return redirect('Profile')
-            else:  # Credentials are incorrect
-                form.add_error(None, 'Invalid username or password.')  # Add a non-field error
-        # Even if form.is_valid() fails, errors will already be handled by the form itself
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('Profile')
     else:
         form = CustomAuthenticationForm()
     return render(request, 'LogIn.html', {'form': form})
@@ -130,3 +123,9 @@ def download_workout_plan(request):
 #         } for gym in gyms
 #     ]
 #     return JsonResponse({"gyms": results})
+
+
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return redirect('LogIn') 
