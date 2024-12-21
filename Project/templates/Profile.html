@@ -18,6 +18,21 @@
                 <li><a href="{% url 'About' %}">About Us</a></li>
                 <li><a href="{% url 'Home' %}">Home</a></li>
                 <li class="join-btn"><a href="{% url 'Profile' %}">Profile</a></li>
+                <li>
+                    <a href="#"
+                       onclick="if (confirm('Are you sure you want to log out?')) {
+                           document.getElementById('logoutForm').submit();
+                       }
+                       return false;">
+                      Logout
+                    </a>
+                  </li>
+                  
+                  <!-- Hidden form to actually POST to /logout/ -->
+                  <form id="logoutForm" method="POST" action="{% url 'Logout' %}" style="display: none;">
+                      {% csrf_token %}
+                  </form>
+                  
             </ul>
         </nav>
     </header>
