@@ -14,4 +14,5 @@ urlpatterns = [
     # path('api/gyms', views.get_nearby_gyms, name='get_nearby_gyms'),
     # path('Gyms', views.find_gyms, name='FindGyms'),
     path('logout/', views.logout_view, name='Logout'),
+    path('calculate-ffmi/', views.calculate_ffmi, name='fat_calculator'),
 ]

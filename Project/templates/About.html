@@ -16,11 +16,15 @@
             <ul class="menu-links">
                 {% if user.is_authenticated %}
                     <!-- User is logged in -->
+                    <li><a href="{% url 'fat_calculator' %}">FFMI</a></li>
+                    <li><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
                     <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
                     <li><a href="{% url 'Home' %}">Home</a></li>
                     <li><a href="{% url 'Profile' %}">Profile</a></li>
                 {% else %}
                     <!-- User is not logged in -->
+                    <li><a href="{% url 'fat_calculator' %}">FFMI</a></li>
+                    <li><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
                     <li class="join-btn"><a href="{% url 'About' %}">About Us</a></li>
                     <li><a href="{% url 'LogIn' %}">Log In</a></li>
                     <li><a href="{% url 'SignUp' %}">Sign Up</a></li>

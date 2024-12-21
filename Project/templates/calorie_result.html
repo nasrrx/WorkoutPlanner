@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calorie Calculator | LiftRight</title>
+    <title>Calorie Result | LiftRight</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     {% load static %}
 </head>
@@ -14,45 +14,26 @@
                 <img src="{% static 'images/Image.png' %}" alt="Logo">
             </a>
             <ul class="menu-links">
+                <li><a href="{% url 'fat_calculator' %}">FFMI</a></li>
+                <li class="join-btn"><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
                 <li><a href="{% url 'About' %}">About Us</a></li>
-                <li class="join-btn"><a href="{% url 'Home' %}">Home</a></li>
+                <li><a href="{% url 'Home' %}">Home</a></li>
                 <li><a href="{% url 'Profile' %}">Profile</a></li>
-                <li><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
             </ul>
         </nav>
     </header>
 
     <main id="container">
         <div class="welcome-section">
-            <h1>Calorie Calculator</h1>
-            <p>Estimate your daily calorie needs based on your activity level.</p>
+            <h1>Calorie Calculator Result</h1>
+            <p>Your estimated daily calorie requirement is:</p>
+            <div class="result">
+                <p class="calorie-value">{{ calories }} kcal</p>
+            </div>
         </div>
 
-        <div class="calculator-section">
-            <form method="post">
-                {% csrf_token %}
-                <div class="input-group">
-                    <label for="weight">Weight (kg)</label>
-                    <input type="number" id="weight" name="weight" required>
-                </div>
-                <div class="input-group">
-                    <label for="height">Height (cm)</label>
-                    <input type="number" id="height" name="height" required>
-                </div>
-                <div class="input-group">
-                    <label for="age">Age</label>
-                    <input type="number" id="age" name="age" required>
-                </div>
-                <div class="input-group">
-                    <label for="activity-level">Activity Level</label>
-                    <select id="activity-level" name="activity_level" required>
-                        <option value="sedentary">Sedentary</option>
-                        <option value="moderate">Moderate Activity</option>
-                        <option value="active">Active</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn">Calculate</button>
-            </form>
+        <div class="actions">
+            <a href="{% url 'calorie_calculator' %}" class="btn">Recalculate</a>
         </div>
     </main>
 
@@ -137,53 +118,24 @@
         color: #3A5876;
     }
 
-    .calculator-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .result {
         margin-top: 20px;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #3A5876;
     }
 
-    .calculator-section form {
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px;
-        text-align: left;
-    }
-
-    .input-group {
-        margin-bottom: 15px;
-    }
-
-    .input-group label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 5px;
+    .calorie-value {
         color: #507687;
+        font-size: 2.5rem;
     }
 
-    .input-group input,
-    .input-group select {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
+    .actions {
+        margin-top: 30px;
     }
 
-    .input-group input:focus,
-    .input-group select:focus {
-        border-color: #507687;
-        outline: none;
-    }
-
-    .btn {
-        width: 100%;
-        padding: 10px 15px;
+    .actions .btn {
+        padding: 10px 20px;
         font-size: 16px;
         background: linear-gradient(90deg, #507687, #3a5876);
         color: white;
@@ -191,9 +143,10 @@
         border-radius: 5px;
         cursor: pointer;
         text-transform: uppercase;
+        text-decoration: none;
     }
 
-    .btn:hover {
+    .actions .btn:hover {
         background: #3d2592;
     }
 

@@ -5,36 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | LiftRight</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    {% load static %}
 </head>
 <body>
     <header>
         <nav class="navbar">
           <a href="#" class="logo">
-            {% load static %}
             <img src="{% static 'images/Image.png' %}" alt="Logo">
           </a>
           <ul class="menu-links">
+            <li><a href="{% url 'fat_calculator' %}">FFMI</a></li>
+            <li><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
             <li><a href="{% url 'About' %}">About Us</a></li>
             <li><a href="{% url 'LogIn' %}">Log In</a></li>
             <li class="join-btn"><a href="{% url 'SignUp' %}">Sign Up</a></li>
           </ul>
         </nav>
-      </header>
+    </header>
 
     <div class="content">
         <div class="signup-form">
             <h1>Sign Up</h1>
             <form method="post">
                 {% csrf_token %}
-                {% for field in form %}
+                <div class="input-group">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
                     <div class="input-group">
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="error">{{ field.errors }}</div>
-                        {% endif %}
+                        <label for="{{ form.age.id_for_label }}">{{ form.age.label }}</label>
+                        {{ form.age }}
                     </div>
-                {% endfor %}
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="{{ form.weight.id_for_label }}">{{ form.weight.label }}</label>
+                            {{ form.weight }}
+                        </div>
+                        <div class="input-group">
+                            <label for="{{ form.height.id_for_label }}">{{ form.height.label }}</label>
+                            {{ form.height }}
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="{{ form.body_fat_percentage.id_for_label }}">{{ form.body_fat_percentage.label }}</label>
+                        {{ form.body_fat_percentage }}
+                    </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                        {{ form.gender }}
+                    </div>
+                    <div class="input-group">
+                        <label for="{{ form.goal.id_for_label }}">{{ form.goal.label }}</label>
+                        {{ form.goal }}
+                    </div>
+                    <div class="input-group">
+                        <label for="{{ form.plan_type.id_for_label }}">{{ form.plan_type.label }}</label>
+                        {{ form.plan_type }}
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.activity_level.id_for_label }}">{{ form.activity_level.label }}</label>
+                    {{ form.activity_level }}
+                </div>
+                
                 <div class="button-wrapper">
                     <button type="submit" class="btn">Sign Up</button>
                 </div>
@@ -47,7 +93,7 @@
     </div>
     <footer class="footer">
         <h3>Contact Us</h3>
-        <p>Email: contact@LiftRightr.com</p>
+        <p>Email: contact@LiftRight.com</p>
         <p>Phone: +123 456 7890</p>
         <p>© 2024 LiftRight. All rights reserved.</p>
     </footer>
@@ -142,6 +188,17 @@
         display: flex;
         justify-content: space-between;
         gap: 60px; 
+    }
+    .input-row {
+        display: flex;
+        gap: 30px; 
+        margin-bottom: 15px;
+    }
+    .input-row .input-group {
+        flex: 1; 
+    }
+    .input-group input, .input-group select {
+        width: 100%; 
     }
     
     .input-row .input-group {

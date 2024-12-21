@@ -31,21 +31,22 @@ class User(AbstractUser):
             ('upper_lower', '4-Day Upper/Lower'),
             ('push_pull_legs', '6-Day Push/Pull/Legs'),
         ],
-        default='full_body',  # Set a default plan type
+        default='full_body',  
         null=True,
         blank=True
     )
     activity_level = models.CharField(
-        max_length=20,
+        max_length=50,
         choices=[
             ('sedentary', 'Sedentary'),
             ('moderate', 'Moderate Activity'),
             ('active', 'Active'),
         ],
-        default='moderate',  # Set a default activity level
+        default='moderate',  
         null=True,
         blank=True
     )
+
 # Exercise model
 class Exercise(models.Model):
     name = models.CharField(max_length=255)
