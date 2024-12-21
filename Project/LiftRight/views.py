@@ -10,13 +10,24 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .utils import generate_pdf, calculate_bmi, read_exercises_from_csv, read_food_items_from_csv
 from django.http import JsonResponse
+from .factories import Factory
 
 
 def RenderSignUpView(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = Factory.create_user(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password1'],
+                age=form.cleaned_data.get('age'),
+                height=form.cleaned_data.get('height'),
+                weight=form.cleaned_data.get('weight'),
+                goal=form.cleaned_data.get('goal'),
+                plan_type=form.cleaned_data.get('plan_type'),
+)
+
             login(request, user)
             return redirect('Home')
     else:
@@ -69,15 +80,11 @@ def update_profile(request):
             user = request.user
 
             # Update user data, including plan_type
-            user.plan_type = data.get('plan_type', user.plan_type)
-            user.age = data.get('age', user.age)
-            user.weight = data.get('weight', user.weight)
-            user.height = data.get('height', user.height)
-            user.gender = data.get('gender', user.gender)
-            user.goal = data.get('goal', user.goal)
-            user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
-            user.activity_level = data.get('activity_level', user.activity_level)
-            user.save()
+            user = Factory.update_user(
+                user=request.user,
+                data=data
+            )
+
 
             return JsonResponse({'message': 'Profile updated successfully'})
         except Exception as e:
