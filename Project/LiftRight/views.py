@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse, HttpResponse
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CalorieCalculatorForm, CustomUserCreationForm, CustomAuthenticationForm
 from .models import User, WorkoutPlan
 import json
 import os
@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .utils import generate_pdf, calculate_bmi, read_exercises_from_csv, read_food_items_from_csv
 from django.http import JsonResponse
+
 
 def RenderSignUpView(request):
     if request.method == 'POST':
@@ -129,3 +130,29 @@ def logout_view(request):
     from django.contrib.auth import logout
     logout(request)
     return redirect('LogIn') 
+
+
+
+def calorie_calculator(request):
+    if request.method == 'POST':
+        form = CalorieCalculatorForm(request.POST)
+        if form.is_valid():
+            weight = form.cleaned_data['weight']
+            height = form.cleaned_data['height']
+            age = form.cleaned_data['age']
+            activity_level = form.cleaned_data['activity_level']
+
+            # Basic BMR calculation
+            bmr = 10 * weight + 6.25 * height - 5 * age
+            if activity_level == 'sedentary':
+                calories = bmr * 1.2
+            elif activity_level == 'moderate':
+                calories = bmr * 1.55
+            else:
+                calories = bmr * 1.75
+
+            return render(request, 'calorie_result.html', {'calories': round(calories)})
+
+    else:
+        form = CalorieCalculatorForm()
+    return render(request, 'calorie_calculator.html', {'form': form})

@@ -13,3 +13,16 @@ class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class CalorieCalculatorForm(forms.Form):
+    weight = forms.FloatField(label='Weight (kg)')
+    height = forms.FloatField(label='Height (cm)')
+    age = forms.IntegerField(label='Age')
+    activity_level = forms.ChoiceField(
+        choices=[
+            ('sedentary', 'Sedentary'),
+            ('moderate', 'Moderate Activity'),
+            ('active', 'Active'),
+        ],
+        label='Activity Level',
+    )
