@@ -1,6 +1,10 @@
+import json
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from datetime import timedelta
+
+from Settings import settings
 
 # Updated User model with relationships to WorkoutPlan and DietPlan
 class User(AbstractUser):
@@ -51,47 +55,44 @@ class User(AbstractUser):
 class Exercise(models.Model):
     name = models.CharField(max_length=255)
     target_muscle = models.CharField(max_length=255)
-    equipment = models.CharField(max_length=255, null=True, blank=True)  # Optional
+    equipment = models.CharField(max_length=255, null=True, blank=True)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
-    rest_time = models.DurationField(default="00:01:00")  # Default rest time
+    rest_time = models.DurationField(default=timedelta(minutes=1))  # Default rest time
 
     def __str__(self):
         return self.name
 
 # WorkoutPlan model
 class WorkoutPlan(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="workout_plans")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # Reference the custom user model
+        on_delete=models.CASCADE,
+        related_name="workout_plans"
+    )
     goal = models.CharField(max_length=50)
     days_per_week = models.PositiveIntegerField()
     duration_weeks = models.PositiveIntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    exercises = models.ManyToManyField(Exercise)
+    exercises = models.ManyToManyField('Exercise')  # Link exercises
 
     def __str__(self):
-        return f"Workout Plan for {self.user.username} - {self.goal}"
+        return f"Workout Plan ({self.goal}) for {self.user.username}"
 
-# DietPlan model
 class DietPlan(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="diet_plans")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="diet_plans")
     goal = models.CharField(max_length=50)
     calories = models.PositiveIntegerField()
     protein = models.DecimalField(max_digits=5, decimal_places=2)
     fats = models.DecimalField(max_digits=5, decimal_places=2)
     carbohydrates = models.DecimalField(max_digits=5, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
+    meals = models.ManyToManyField('Meal')  # Add this field to link meals
 
     def __str__(self):
-        return f"Diet Plan for {self.user.username} - {self.goal}"
+        return f"Diet Plan ({self.goal}) for {self.user.username}"
 
-# Meals model
 class Meal(models.Model):
-    diet_plan = models.ForeignKey(DietPlan, on_delete=models.CASCADE, related_name="meals")
-    meal_time = models.CharField(max_length=50, choices=[('breakfast', 'Breakfast'), ('lunch', 'Lunch'), ('dinner', 'Dinner'), ('snack', 'Snack')])
+    name = models.CharField(max_length=255)  # Ensure this field exists
     calories = models.PositiveIntegerField()
     protein = models.DecimalField(max_digits=5, decimal_places=2)
     fats = models.DecimalField(max_digits=5, decimal_places=2)
     carbohydrates = models.DecimalField(max_digits=5, decimal_places=2)
-
-    def __str__(self):
-        return f"Meal ({self.meal_time}) in {self.diet_plan}"

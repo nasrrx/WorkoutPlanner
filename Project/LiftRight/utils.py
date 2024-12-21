@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 import csv
 import random
@@ -346,7 +347,7 @@ def load_meals_from_csv(file_path):
 
 def save_workout_plan(user, goal, plan, days_per_week, duration_weeks):
     """
-    Save the workout plan, its exercises, and day-wise splits.
+    Save the workout plan and its exercises.
 
     Args:
     - user: The user for whom the plan is generated.
@@ -355,6 +356,8 @@ def save_workout_plan(user, goal, plan, days_per_week, duration_weeks):
     - days_per_week: Number of workout days per week.
     - duration_weeks: Duration of the plan in weeks.
     """
+    from datetime import timedelta
+
     # Create WorkoutPlan object
     workout_plan = WorkoutPlan.objects.create(
         user=user,
@@ -363,23 +366,29 @@ def save_workout_plan(user, goal, plan, days_per_week, duration_weeks):
         duration_weeks=duration_weeks
     )
 
-    # Save the day-wise split
-    workout_plan.set_days(plan)
-    workout_plan.save()
-
     # Link exercises to the workout plan
-    for day, exercises in plan.items():
+    for exercises in plan.values():  # Iterate over each day's exercises
         for exercise_data in exercises:
-            exercise, _ = Exercise.objects.get_or_create(
-                name=exercise_data['name'],
-                target_muscle=exercise_data['target_muscle'],
-                defaults={
-                    'sets': exercise_data['sets'],
-                    'reps': exercise_data['reps'],
-                    'rest_time': '00:01:00'
-                }
-            )
-            workout_plan.exercises.add(exercise)
+            try:
+                # Handle missing target_muscle with a default value
+                target_muscle = exercise_data.get('target_muscle', 'general')
+
+                # Create or get the exercise
+                exercise, _ = Exercise.objects.get_or_create(
+                    name=exercise_data['name'],
+                    defaults={
+                        'target_muscle': target_muscle,
+                        'sets': exercise_data.get('sets', 0),  # Default to 0 if missing
+                        'reps': exercise_data.get('reps', 0),  # Default to 0 if missing
+                        'rest_time': timedelta(minutes=1),  # Default rest time
+                    }
+                )
+                workout_plan.exercises.add(exercise)
+            except KeyError as e:
+                print(f"KeyError: Missing key {e} in exercise_data: {exercise_data}")
+            except Exception as e:
+                print(f"Unexpected error: {e} while processing {exercise_data}")
+
 
 def save_diet_plan(user, goal, calories, protein, fats, carbs, food_items):
     """
