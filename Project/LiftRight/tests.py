@@ -116,14 +116,19 @@ def test_update_profile(client, django_user_model):
     assert user.goal == 'lose fat'
     assert user.plan_type == 'upper_lower'
 
-#@pytest.mark.django_db
-#def test_invalid_login(client, django_user_model):
-    #"""Test logging in with invalid credentials."""
-    #user = django_user_model.objects.create_user(username='testuser', password='testpassword123')
-    #response = client.post(reverse('LogIn'), data={'username': 'testuser', 'password': 'wrongpassword'})
-    #assert response.status_code == 200
-    #assert 'LogIn.html' in [t.name for t in response.templates]
-    #assert "Please enter a correct username and password" in response.content.decode()
+@pytest.mark.django_db
+def test_invalid_login(client, django_user_model):
+    """Test logging in with invalid credentials."""
+    django_user_model.objects.create_user(username='testuser', password='testpassword123')
+    response = client.post(reverse('LogIn'), data={'username': 'testuser', 'password': 'wrongpassword'})
+
+    # Verify the login page is re-rendered
+    assert response.status_code == 200
+    assert 'LogIn.html' in [t.name for t in response.templates]
+
+    # Ensure the form contains errors
+    assert 'form' in response.context
+    assert response.context['form'].errors
 
 @pytest.mark.django_db
 def test_generate_pdf(client, django_user_model):

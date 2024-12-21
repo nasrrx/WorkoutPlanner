@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Log In | LiftRight</title>
-
 </head>
 <body>
     
@@ -21,17 +20,24 @@
             <li><a href="{% url 'SignUp' %}">Sign Up</a></li>
           </ul>
         </nav>
-      </header>
+    </header>
 
     <div class="content">
         <div class="text-section">
             <p>Your Path to Strength and Balance</p>
             {% load static %}
             <img src="{% static 'images/Image.png' %}" alt="Logo">
-            
         </div>
 
         <div class="login-form">
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <h1>Login</h1>
             <form method="post">
                 {% csrf_token %}
@@ -51,9 +57,9 @@
             <div class="redirect-signup">
                 <p>Don't have an account? <a href="{% url 'SignUp' %}">Sign up here</a></p>
             </div>
-            
         </div>
     </div>
+
     <footer class="footer">
         <h3>Contact Us</h3>
         <p>Email: contact@LiftRight.com</p>
@@ -62,6 +68,7 @@
     </footer>
 </body>
 </html>
+
 
 <style>
     body {
