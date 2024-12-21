@@ -35,7 +35,17 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
-
+    activity_level = models.CharField(
+        max_length=20,
+        choices=[
+            ('sedentary', 'Sedentary'),
+            ('moderate', 'Moderate Activity'),
+            ('active', 'Active'),
+        ],
+        default='moderate',  # Set a default activity level
+        null=True,
+        blank=True
+    )
 # Exercise model
 class Exercise(models.Model):
     name = models.CharField(max_length=255)
