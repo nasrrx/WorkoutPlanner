@@ -52,13 +52,22 @@ def read_food_items_from_csv():
             # Adjust column names based on the actual CSV headers
             food_items.append({
                 'food_item': row.get('food_item') or row.get('Food Item'),
-                'calories_per_serving': int(row.get('calories_per_serving') or row.get('Calories Per Serving', 0)),
+                'calories_per_serving': int(row.get('Calories (per 100g)') or row.get('Calories Per 100g', 0)),
             })
     return food_items
 
 # Generate PDF function
 def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
-   
+    # Validate inputs
+    if not weight or not height or not age:
+        raise ValueError("Weight, height, and age must be provided and valid.")
+
+    if gender not in ['male', 'female']:
+        raise ValueError("Gender must be 'male' or 'female'.")
+
+    if activity_level not in ['sedentary', 'moderate', 'active']:
+        raise ValueError("Activity level must be one of 'sedentary', 'moderate', or 'active'.")
+    
     """Generate a PDF for the workout and food plan based on the plan type."""
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
@@ -163,9 +172,9 @@ def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
     # Add example foods from CSV
     elements.append(Paragraph("<b>Example Foods:</b>", styles['Heading2']))
     food_items = read_food_items_from_csv()
-    for food in food_items[:10]:  # Show the first 10 items as examples
+    for food in food_items[:18]:
         elements.append(Paragraph(
-            f"- {food['food_item']}: {food['calories_per_serving']} calories per serving",
+            f"- {food['food_item']}: {food['calories_per_serving']} calories per 100g",
             styles['BodyText']
         ))
 
@@ -216,23 +225,14 @@ def distribute_exercises(exercises, total_sets, max_sets_per_exercise=4):
 def generate_full_body_plan():
     """Generate a 3-day full-body workout plan dynamically."""
     exercises = read_exercises_from_csv()
-
-    plan = {
-        "Day 1": [],
-        "Day 2": [],
-        "Day 3": []
-    }
+    plan = {"Day 1": [], "Day 2": [], "Day 3": []}
 
     target_muscles = ['Quads', 'Chest', 'Back', 'Shoulders', 'Arms', 'Core', 'Hamstrings']
-    weekly_sets = 12  # Example: Total weekly sets per muscle group
+    weekly_sets = 12  # Total weekly sets per muscle group
 
     for target in target_muscles:
         muscle_exercises = filter_exercises_by_muscle(exercises, target)
-        if not muscle_exercises:
-            continue
-
-        # Shuffle exercises to add variety across days
-        random.shuffle(muscle_exercises)
+        random.shuffle(muscle_exercises)  # Shuffle to reduce repetition
 
         # Split weekly sets across 3 days
         sets_per_day = weekly_sets // 3
@@ -244,13 +244,7 @@ def generate_full_body_plan():
 def generate_upper_lower_split():
     """Generate a 4-day Upper/Lower workout split dynamically."""
     exercises = read_exercises_from_csv()
-
-    plan = {
-        "Day 1 (Upper)": [],
-        "Day 2 (Lower)": [],
-        "Day 3 (Upper)": [],
-        "Day 4 (Lower)": []
-    }
+    plan = {"Day 1 (Upper)": [], "Day 2 (Lower)": [], "Day 3 (Upper)": [], "Day 4 (Lower)": []}
 
     upper_muscles = ['Chest', 'Back', 'Shoulders', 'Arms']
     lower_muscles = ['Quads', 'Hamstrings', 'Glutes', 'Calves']
@@ -259,23 +253,19 @@ def generate_upper_lower_split():
     weekly_sets_lower = 20  # Total weekly sets for lower body
 
     # Distribute exercises for upper body
-    for muscle_group in upper_muscles:
-        muscle_exercises = filter_exercises_by_muscle(exercises, muscle_group)
-        if not muscle_exercises:
-            continue
-
-        sets_per_session = weekly_sets_upper // 2
-        for i, day in enumerate(["Day 1 (Upper)", "Day 3 (Upper)"]):
+    for muscle in upper_muscles:
+        muscle_exercises = filter_exercises_by_muscle(exercises, muscle)
+        random.shuffle(muscle_exercises)
+        sets_per_session = weekly_sets_upper // 2  # Split across 2 upper days
+        for day in ["Day 1 (Upper)", "Day 3 (Upper)"]:
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_session))
 
     # Distribute exercises for lower body
-    for muscle_group in lower_muscles:
-        muscle_exercises = filter_exercises_by_muscle(exercises, muscle_group)
-        if not muscle_exercises:
-            continue
-
-        sets_per_session = weekly_sets_lower // 2
-        for i, day in enumerate(["Day 2 (Lower)", "Day 4 (Lower)"]):
+    for muscle in lower_muscles:
+        muscle_exercises = filter_exercises_by_muscle(exercises, muscle)
+        random.shuffle(muscle_exercises)
+        sets_per_session = weekly_sets_lower // 2  # Split across 2 lower days
+        for day in ["Day 2 (Lower)", "Day 4 (Lower)"]:
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_session))
 
     return plan
@@ -283,45 +273,43 @@ def generate_upper_lower_split():
 def generate_push_pull_legs():
     """Generate a 6-day Push/Pull/Legs workout split dynamically."""
     exercises = read_exercises_from_csv()
-
     plan = {
-        "Day 1 (Push)": [],
-        "Day 2 (Pull)": [],
-        "Day 3 (Legs)": [],
-        "Day 4 (Push)": [],
-        "Day 5 (Pull)": [],
-        "Day 6 (Legs)": []
+        "Day 1 (Push)": [], "Day 2 (Pull)": [], "Day 3 (Legs)": [],
+        "Day 4 (Push)": [], "Day 5 (Pull)": [], "Day 6 (Legs)": []
     }
 
     push_muscles = ['Chest', 'Shoulders', 'Triceps']
     pull_muscles = ['Back', 'Biceps']
-    leg_muscles = ['Quads', 'Hamstrings', 'Glutes', 'Calves']  # Add all lower body muscles
+    leg_muscles = ['Quads', 'Hamstrings', 'Glutes', 'Calves']
 
     weekly_sets = {
-        "Push": 15,
-        "Pull": 15,
-        "Legs": 18
+        "Push": 15,  # Total weekly sets for push muscles
+        "Pull": 15,  # Total weekly sets for pull muscles
+        "Legs": 18   # Total weekly sets for legs
     }
 
     # Distribute exercises for push days
-    for muscle_group in push_muscles:
-        muscle_exercises = filter_exercises_by_muscle(exercises, muscle_group)
+    for muscle in push_muscles:
+        muscle_exercises = filter_exercises_by_muscle(exercises, muscle)
+        random.shuffle(muscle_exercises)
         sets_per_day = weekly_sets["Push"] // 2
-        for i, day in enumerate(["Day 1 (Push)", "Day 4 (Push)"]):
+        for day in ["Day 1 (Push)", "Day 4 (Push)"]:
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_day))
 
     # Distribute exercises for pull days
-    for muscle_group in pull_muscles:
-        muscle_exercises = filter_exercises_by_muscle(exercises, muscle_group)
+    for muscle in pull_muscles:
+        muscle_exercises = filter_exercises_by_muscle(exercises, muscle)
+        random.shuffle(muscle_exercises)
         sets_per_day = weekly_sets["Pull"] // 2
-        for i, day in enumerate(["Day 2 (Pull)", "Day 5 (Pull)"]):
+        for day in ["Day 2 (Pull)", "Day 5 (Pull)"]:
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_day))
 
     # Distribute exercises for leg days
-    for muscle_group in leg_muscles:
-        muscle_exercises = filter_exercises_by_muscle(exercises, muscle_group)
+    for muscle in leg_muscles:
+        muscle_exercises = filter_exercises_by_muscle(exercises, muscle)
+        random.shuffle(muscle_exercises)
         sets_per_day = weekly_sets["Legs"] // 2
-        for i, day in enumerate(["Day 3 (Legs)", "Day 6 (Legs)"]):
+        for day in ["Day 3 (Legs)", "Day 6 (Legs)"]:
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_day))
 
     return plan

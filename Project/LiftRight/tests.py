@@ -86,7 +86,14 @@ def test_load_profile_user_data(client, django_user_model):
 def test_download_workout_plan(client, django_user_model):
     """Test downloading a workout plan based on the user's goal and plan type."""
     user = django_user_model.objects.create_user(
-        username='testuser', password='testpassword123', goal='gain muscle', plan_type='push_pull_legs'
+        username='testuser',
+        password='testpassword123',
+        weight=70.0,  # Ensure weight is set
+        height=175.0,  # Ensure height is set
+        age=25,  # Ensure age is set
+        goal='gain muscle',
+        gender='male',  # Ensure gender is valid
+        activity_level='moderate',  # Ensure activity_level is valid
     )
     client.login(username='testuser', password='testpassword123')
 
@@ -133,7 +140,7 @@ def test_invalid_login(client, django_user_model):
 @pytest.mark.django_db
 def test_generate_pdf(client, django_user_model):
     """Test generating a PDF for a user's workout and nutrition plan."""
-    user = django_user_model.objects.create_user(username='testuser', password='testpassword123', goal='gain muscle', plan_type='push_pull_legs')
+    user = django_user_model.objects.create_user(username='testuser', password='testpassword123', goal='gain muscle', plan_type='push_pull_legs', age ='17', weight='70', height='170', gender='male')
     client.login(username='testuser', password='testpassword123')
 
     response = client.get(reverse('download_workout_plan'))
