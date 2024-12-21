@@ -9,6 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .utils import generate_pdf, calculate_bmi, read_exercises_from_csv, read_food_items_from_csv
+from django.http import JsonResponse
+from django.shortcuts import render
+import requests
 
 def RenderSignUpView(request):
     if request.method == 'POST':
@@ -94,3 +97,31 @@ def download_workout_plan(request):
 
     # Generate the PDF with the selected plan type
     return generate_pdf(plan_type, food_items)
+
+def find_gyms(request):
+    return render(request, 'Gyms.html')
+
+def get_nearby_gyms(request):
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+
+    if not lat or not lng:
+        return JsonResponse({"error": "Invalid coordinates"}, status=400)
+
+    # Use Nominatim API (OpenStreetMap) for nearby gym search
+    url = f"https://nominatim.openstreetmap.org/search?format=json&q=gym&limit=10&bounded=1&viewbox={float(lng)-0.05},{float(lat)+0.05},{float(lng)+0.05},{float(lat)-0.05}"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return JsonResponse({"error": "Failed to fetch gyms"}, status=500)
+
+    gyms = response.json()
+    results = [
+        {
+            "name": gym.get('display_name', 'Unknown Gym'),
+            "lat": gym.get('lat'),
+            "lon": gym.get('lon'),
+            "address": gym.get('display_name', 'Unknown Address')
+        } for gym in gyms
+    ]
+    return JsonResponse({"gyms": results})

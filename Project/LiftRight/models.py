@@ -1,11 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Updated User model with relationships to WorkoutPlan and DietPlan
 class User(AbstractUser):
-    age = models.PositiveIntegerField(null=True, blank=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    height = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    age = models.PositiveIntegerField(null=True, blank=True,validators=[MinValueValidator(13)])
+    weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=[
+            MinValueValidator(30.0),  
+            MaxValueValidator(300.0) 
+        ])
+    height = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=[
+            MinValueValidator(140.0),  
+            MaxValueValidator(250.0)  
+        ])
     gender = models.CharField(max_length=6, choices=[('female', 'Female'), ('male', 'Male')], null=True, blank=True)
     goal = models.CharField(
         max_length=50,
