@@ -52,6 +52,7 @@
             <p><span class="label">Plan Type:</span> <span class="value">{{ plan_type }}</span></p>
             <p><span class="label">Body Fat %:</span> <span class="value">{{ body_fat_percentage }}</span></p>
             <p><span class="label">BMI:</span> <span class="value">{{ bmi }}</span></p>
+            <p><span class="label">Avtivity Level:</span> <span class="value">{{ activity_level }}</span></p>
         </div>
 
         <button id="edit-button" onclick="toggleEditForm()">Edit</button>
@@ -94,6 +95,14 @@
                     <option value="push_pull_legs" {% if user.plan_type == 'push_pull_legs' %}selected{% endif %}>6-Day Push/Pull/Legs</option>
                 </select>
             </div>
+            <div class="input-group">
+                <label for="edit-activity_level">Activity Level:</label>
+                <select id="edit-activity_level" name="activity_level">
+                    <option value="sedentary" {% if user.activity_level == 'sedentary' %}selected{% endif %}>Sedentary</option>
+                    <option value="moderate" {% if user.activity_level == 'moderate' %}selected{% endif %}>Moderate Activity</option>
+                    <option value="active" {% if user.activity_level == 'active' %}selected{% endif %}>Active</option>
+                </select>
+            </div>
 
             <div class="input-group">
                 <label for="edit-bodyfat">Body Fat%:</label>
@@ -121,6 +130,7 @@
                 goal: document.getElementById('edit-goal').value,
                 plan_type: document.getElementById('edit-plan_type').value,
                 body_fat_percentage: document.getElementById('edit-bodyfat').value,
+                activity_level: document.getElementById('edit-activity_level').value,
             };
 
             fetch('/update-profile/', {

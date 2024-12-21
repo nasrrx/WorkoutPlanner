@@ -13,13 +13,14 @@ class User(AbstractUser):
             MinValueValidator(140.0),  
             MaxValueValidator(250.0)  
         ])
-    gender = models.CharField(max_length=6, choices=[('female', 'Female'), ('male', 'Male')], null=True, blank=True)
+    gender = models.CharField(max_length=6, choices=[('female', 'Female'), ('male', 'Male')],default='female', null=True, blank=True)
     goal = models.CharField(
         max_length=50,
         choices=[
             ('gain muscle', 'Gain Muscle'),
             ('lose fat', 'Lose Fat'),
         ],
+        default='gain muscle',
         null=True,
         blank=True
     )
