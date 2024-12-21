@@ -83,10 +83,17 @@ def update_profile(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
 @login_required
 def download_workout_plan(request):
     # Get the current user
     user = request.user
+    weight = user.weight
+    height = user.height
+    age = user.age
+    gender = user.gender
+    activity_level = user.activity_level
+    goal = user.goal
 
     # Use the user's plan type as the default
     plan_type = user.plan_type if user.plan_type else 'full_body'
@@ -95,7 +102,7 @@ def download_workout_plan(request):
     food_items = read_food_items_from_csv()
 
     # Generate the PDF with the selected plan type
-    return generate_pdf(plan_type, food_items)
+    return generate_pdf(plan_type, weight, height, age, gender, activity_level,goal)
 
 # def find_gyms(request):
 #     return render(request, 'Gyms.html')
