@@ -48,14 +48,13 @@ class User(AbstractUser):
         blank=True
     )
 
-# Exercise model
 class Exercise(models.Model):
     name = models.CharField(max_length=255)
     target_muscle = models.CharField(max_length=255)
-    equipment = models.CharField(max_length=255, null=True, blank=True)
+    equipment = models.CharField(max_length=255, null=True, blank=True)  # Optional
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
-    rest_time = models.DurationField()
+    rest_time = models.DurationField(default="00:01:00")  # Default rest time
 
     def __str__(self):
         return self.name

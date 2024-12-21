@@ -9,6 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from django.http import HttpResponse
 from Settings import settings
+from .models import DietPlan, WorkoutPlan, Meal, Exercise
 
 # Utility functions
 
@@ -57,7 +58,7 @@ def read_food_items_from_csv():
     return food_items
 
 # Generate PDF function
-def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
+def generate_pdf(user, plan_type, weight, height, age, gender, activity_level, goal):
     # Validate inputs
     if not weight or not height or not age:
         raise ValueError("Weight, height, and age must be provided and valid.")
@@ -118,10 +119,13 @@ def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
     # Dynamically generate the workout plan
     if plan_type == "full_body":
         workout_plan = generate_full_body_plan()
+        days_per_week = 3
     elif plan_type == "upper_lower":
         workout_plan = generate_upper_lower_split()
+        days_per_week = 4
     elif plan_type == "push_pull_legs":
         workout_plan = generate_push_pull_legs()
+        days_per_week = 6
     else:
         raise ValueError("Invalid plan type")
 
@@ -185,11 +189,12 @@ def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
     )
     elements.append(footer)
 
-
-   
-
     # Build the PDF
     doc.build(elements)
+    
+    
+    save_workout_plan(user,goal,workout_plan,days_per_week, 8)
+    save_diet_plan(user, goal, calories, protein,fats,carbs,food_items)
 
     # Return the generated PDF as a response
     buffer.seek(0)
@@ -238,7 +243,7 @@ def generate_full_body_plan():
         sets_per_day = weekly_sets // 3
         for i, day in enumerate(plan.keys()):
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_day))
-
+    
     return plan
 
 def generate_upper_lower_split():
@@ -313,3 +318,101 @@ def generate_push_pull_legs():
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_day))
 
     return plan
+
+def load_exercises_from_csv(file_path):
+    with open(file_path, 'r') as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            Exercise.objects.create(
+                name=row['name'],
+                target_muscle=row['target_muscle'],
+                equipment=row.get('equipment'),
+                sets=int(row['sets']),
+                reps=int(row['reps']),
+                rest_time=row.get('rest_time', '00:01:00')  # Default 1-minute rest
+            )
+
+def load_meals_from_csv(file_path):
+    with open(file_path, 'r') as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            Meal.objects.create(
+                name=row['meal_name'],
+                calories=int(row['calories']),
+                protein=float(row['protein']),
+                fats=float(row['fats']),
+                carbohydrates=float(row['carbohydrates'])
+            )
+
+def save_workout_plan(user, goal, plan, days_per_week, duration_weeks):
+    """
+    Save the workout plan, its exercises, and day-wise splits.
+
+    Args:
+    - user: The user for whom the plan is generated.
+    - goal: The user's goal (e.g., "gain muscle", "lose fat").
+    - plan: A dictionary containing the day-wise workout split.
+    - days_per_week: Number of workout days per week.
+    - duration_weeks: Duration of the plan in weeks.
+    """
+    # Create WorkoutPlan object
+    workout_plan = WorkoutPlan.objects.create(
+        user=user,
+        goal=goal,
+        days_per_week=days_per_week,
+        duration_weeks=duration_weeks
+    )
+
+    # Save the day-wise split
+    workout_plan.set_days(plan)
+    workout_plan.save()
+
+    # Link exercises to the workout plan
+    for day, exercises in plan.items():
+        for exercise_data in exercises:
+            exercise, _ = Exercise.objects.get_or_create(
+                name=exercise_data['name'],
+                target_muscle=exercise_data['target_muscle'],
+                defaults={
+                    'sets': exercise_data['sets'],
+                    'reps': exercise_data['reps'],
+                    'rest_time': '00:01:00'
+                }
+            )
+            workout_plan.exercises.add(exercise)
+
+def save_diet_plan(user, goal, calories, protein, fats, carbs, food_items):
+    """
+    Save the diet plan, its macronutrient breakdown, and link meals.
+
+    Args:
+    - user: The user for whom the plan is generated.
+    - goal: The user's goal (e.g., "gain muscle", "lose fat").
+    - calories: Total daily calorie requirement.
+    - protein: Protein intake in grams.
+    - fats: Fat intake in grams.
+    - carbs: Carbohydrate intake in grams.
+    - food_items: A list of example meals.
+    """
+    # Create DietPlan object
+    diet_plan = DietPlan.objects.create(
+        user=user,
+        goal=goal,
+        calories=calories,
+        protein=protein,
+        fats=fats,
+        carbohydrates=carbs
+    )
+
+    # Link meals to the diet plan
+    for food in food_items[:18]:  # Link the first 19 meals (adjust as needed)
+        meal, _ = Meal.objects.get_or_create(
+            name=food['food_item'],
+            defaults={
+                'calories': food['calories_per_serving'],
+                'protein': random.uniform(5, 15),  # Example values
+                'fats': random.uniform(2, 10),
+                'carbohydrates': random.uniform(10, 30)
+            }
+        )
+        diet_plan.meals.add(meal)

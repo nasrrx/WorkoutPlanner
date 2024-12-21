@@ -104,7 +104,7 @@ def download_workout_plan(request):
     food_items = read_food_items_from_csv()
 
     # Generate the PDF with the selected plan type
-    return generate_pdf(plan_type, weight, height, age, gender, activity_level,goal)
+    return generate_pdf(user, plan_type, weight, height, age, gender, activity_level,goal)
 
 # def find_gyms(request):
 #     return render(request, 'Gyms.html')
