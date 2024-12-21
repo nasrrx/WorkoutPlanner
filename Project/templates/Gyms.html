@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Find Gyms | LiftRight</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <img src="images/Image.png" alt="Logo">
+            </a>
+            <ul class="menu-links">
+                {% comment %} <li class="join-btn"><a href="FindGyms">Find Gyms</a></li> {% endcomment %}
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>  
+    </header>
+
+    <div class="map-container">
+        <iframe
+            src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Gyms+in+Cairo,Egypt"
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <footer>
+        <h3>Contact Us</h3>
+        <p>Email: contact@LiftRight.com</p>
+        <p>Phone: +123 456 7890</p>
+        <p>© 2024 LiftRight. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        background-color: #FCFAEE;
+    }
+
+    header {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .navbar {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar .logo img {
+        width: 50px;
+        height: auto;
+    }
+
+    .navbar .menu-links {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        gap: 30px;
+    }
+
+    .navbar .menu-links li a {
+        color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.2s ease;
+    }
+
+    .navbar .menu-links .join-btn a {
+        border: 1px solid #fff;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .map-container {
+        margin-top: 100px; /* Adjust the top margin to ensure the map is visible below the header */
+        padding: 20px;
+    }
+
+    iframe {
+        width: 100%; /* Responsive width */
+        height: 500px; /* Fixed height for visibility */
+        border: none; /* Remove default border */
+    }
+
+    footer {
+        background-color: #2A3E4C;
+        color: #fff;
+        padding: 40px 20px;
+        text-align: center;
+        font-size: 16px;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    footer h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #B8001F;
+        margin-bottom: 10px;
+    }
+
+    footer p {
+        font-size: 16px;
+        color: #d1d1d1;
+    }
+</style>
