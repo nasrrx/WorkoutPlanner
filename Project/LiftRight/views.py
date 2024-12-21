@@ -54,7 +54,8 @@ def LoadProfileUserData(request):
         'goal': user.goal,
         'body_fat_percentage': user.body_fat_percentage,
         'plan_type': user.get_plan_type_display,
-        'bmi': calculate_bmi(user.height, user.weight, user.age, user.gender)
+        'bmi': calculate_bmi(user.height, user.weight, user.age, user.gender),
+        'activity_level': user.activity_level
     }
 
     return render(request, 'Profile.html', context)
@@ -75,6 +76,7 @@ def update_profile(request):
             user.gender = data.get('gender', user.gender)
             user.goal = data.get('goal', user.goal)
             user.body_fat_percentage = data.get('body_fat_percentage', user.body_fat_percentage)
+            user.activity_level = data.get('activity_level', user.activity_level)
             user.save()
 
             return JsonResponse({'message': 'Profile updated successfully'})
