@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse, HttpResponse
-from .forms import CalorieCalculatorForm, CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CalorieCalculatorForm, CustomUserCreationForm, CustomAuthenticationForm, FFMICalculatorForm
 from .models import User, WorkoutPlan
 import json
 import os
@@ -156,3 +156,23 @@ def calorie_calculator(request):
     else:
         form = CalorieCalculatorForm()
     return render(request, 'calorie_calculator.html', {'form': form})
+
+
+def calculate_ffmi(request):
+    if request.method == 'POST':
+        form = FFMICalculatorForm(request.POST)
+        if form.is_valid():
+            weight = form.cleaned_data['weight']
+            height_cm = form.cleaned_data['height']
+            body_fat_percentage = form.cleaned_data['bodyfat']
+            
+            height_m = height_cm / 100
+            fat_mass = weight * (body_fat_percentage / 100)
+            fat_free_mass = weight - fat_mass
+            ffmi = fat_free_mass / (height_m ** 2) + (6.1 * (1.8 - height_m))
+            
+            return render(request, 'fat_result.html', {'ffmi': round(ffmi, 2)})
+    else:
+        form = FFMICalculatorForm()  # Initialize an empty form for GET request
+
+    return render(request, 'fat_calculator.html', {'form': form})

@@ -7,7 +7,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'age', 'weight', 'height','gender','goal','body_fat_percentage', 'plan_type']
+        fields = ['username', 'email', 'password1', 'password2', 'age', 'weight', 'height','body_fat_percentage','gender','goal', 'plan_type','activity_level']
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
@@ -26,3 +26,10 @@ class CalorieCalculatorForm(forms.Form):
         ],
         label='Activity Level',
     )
+    
+class FFMICalculatorForm(forms.Form):
+    weight = forms.FloatField(label='Weight (kg)')
+    height = forms.FloatField(label='Height (cm)')
+    bodyfat = forms.FloatField(label='Body Fat (%)')
+    
+    
