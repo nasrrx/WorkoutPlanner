@@ -14,8 +14,9 @@
                 <img src="{% static 'images/Image.png' %}" alt="Logo">
             </a>
             <ul class="menu-links">
+                <li class="join-btn"><a href="{% url 'calorie_calculator' %}">Calorie Calculator</a></li>
                 <li><a href="{% url 'About' %}">About Us</a></li>
-                <li class="join-btn"><a href="{% url 'Home' %}">Home</a></li>
+                <li><a href="{% url 'Home' %}">Home</a></li>
                 <li><a href="{% url 'Profile' %}">Profile</a></li>
             </ul>
         </nav>
@@ -127,7 +128,7 @@
 
     .welcome-section h1 {
         font-size: 2.5rem;
-        color: #507687;
+        color: #B8001F;
     }
 
     .welcome-section p {
@@ -140,11 +141,12 @@
         margin-top: 20px;
         display: inline-block;
         text-align: left;
-        background: white;
-        padding: 20px;
         border-radius: 10px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
+        background-color: #FCFAEE;
+        padding: 40px;
+        max-width: 400px;
+        width: 100%;
     }
 
     .input-group {
