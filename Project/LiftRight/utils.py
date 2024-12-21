@@ -57,7 +57,7 @@ def read_food_items_from_csv():
     return food_items
 
 # Generate PDF function
-def generate_pdf(plan_type, food_items):
+def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
    
     """Generate a PDF for the workout and food plan based on the plan type."""
     buffer = BytesIO()
@@ -71,17 +71,15 @@ def generate_pdf(plan_type, food_items):
     elements.append(title)
     elements.append(Spacer(1, 20))
     
-    goalNew = "gain muscle"
-    
 # Add goal-based descriptions
-    if goalNew == "gain muscle":
+    if goal == "gain muscle":
         workout_plan = generate_push_pull_legs()  # Push/Pull/Legs split for muscle gain
         intro_text = (
         "This plan is designed to help you build muscle effectively. "
         "It focuses on progressive overload with a mix of compound and isolation exercises to target all major muscle groups. "
         "Follow this plan consistently and fuel your body with the recommended nutrition for optimal results."
         )
-    elif goalNew == "lose fat":
+    elif goal == "lose fat":
         workout_plan = generate_full_body_plan()  # Full-Body split for fat loss
         intro_text = (
             "This plan is designed to help you lose fat efficiently while maintaining muscle mass. "
@@ -128,23 +126,58 @@ def generate_pdf(plan_type, food_items):
                 styles['BodyText']
             ))
         elements.append(Spacer(1, 10))
+        
+    # Add calorie recommendations
+    elements.append(Paragraph("<b>Calorie Recommendations:</b>", styles['Heading2']))
 
-    # Add the nutrition guide
-    elements.append(Paragraph("<b>Nutrition Guide:</b>", styles['Heading2']))
-    for food in food_items:
+    # Calculate BMR and calorie needs
+    if gender == 'male':
+        bmr = 10 * float(weight) + 6.25 * float(height) - 5 * float(age) + 5
+    else:
+        bmr = 10 * float(weight) + 6.25 * float(height) - 5 * float(age) - 161
+
+    activity_multiplier = {'sedentary': 1.2, 'moderate': 1.55, 'active': 1.75}
+    
+    if goal == 'gain muscle':
+        calories = round(bmr * activity_multiplier.get(activity_level, 1.2) + 500)
+    elif goal == 'lose fat':
+        calories = round(bmr * activity_multiplier.get(activity_level, 1.2) - 500)
+    else:
+        calories = round(bmr * activity_multiplier.get(activity_level, 1.2))  # Default for maintenance
+
+    # Macronutrient calculations
+    protein = round(weight * 2)  # 2g of protein per kg
+    fats = round(calories * 0.25 / 9)  # 25% of calories from fats
+    carbs = round((calories - (protein * 4 + fats * 9)) / 4)
+
+    elements.append(Paragraph(
+        f"Based on your data, your estimated daily calorie needs are: <b>{calories} kcal</b>.<br/>"
+        f"Suggested macronutrient breakdown:<br/>"
+        f"- Protein: {protein}g<br/>"
+        f"- Fats: {fats}g<br/>"
+        f"- Carbohydrates: {carbs}g<br/>",
+        styles['BodyText']
+    ))
+    elements.append(Spacer(1, 20))
+
+    # Add example foods from CSV
+    elements.append(Paragraph("<b>Example Foods:</b>", styles['Heading2']))
+    food_items = read_food_items_from_csv()
+    for food in food_items[:10]:  # Show the first 10 items as examples
         elements.append(Paragraph(
             f"- {food['food_item']}: {food['calories_per_serving']} calories per serving",
             styles['BodyText']
         ))
-    elements.append(Spacer(1, 20))
 
     # Add a footer with encouragement
     footer = Paragraph(
-        "Remember: Consistency is the key to success. Stick to your plan, track your progress, and adjust as needed. "
-        "You’ve got this!",
+        "Stick to your plan, track progress, and make adjustments as needed. Consistency is key!",
         styles['BodyText']
     )
     elements.append(footer)
+
+
+   
 
     # Build the PDF
     doc.build(elements)
