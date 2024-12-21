@@ -46,15 +46,15 @@ def read_food_items_from_csv():
     """Read food items from the CSV file."""
     food_items = []
     file_path = 'WorkoutPlans/Datasets/healthy_foods_expanded.csv'
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8-sig') as file:  # Explicit encoding
         reader = csv.DictReader(file)
         for row in reader:
-            # Adjust column names based on the actual CSV headers
             food_items.append({
                 'food_item': row.get('food_item') or row.get('Food Item'),
-                'calories_per_serving': int(row.get('Calories (per 100g)') or row.get('Calories Per 100g', 0)),
+                'calories_per_serving': int(row.get('calories_per_serving') or row.get('Calories Per Serving', 0)),
             })
     return food_items
+
 
 # Generate PDF function
 def generate_pdf(plan_type, weight, height, age, gender, activity_level, goal):
@@ -269,6 +269,7 @@ def generate_upper_lower_split():
             plan[day].extend(distribute_exercises(muscle_exercises, sets_per_session))
 
     return plan
+
 
 def generate_push_pull_legs():
     """Generate a 6-day Push/Pull/Legs workout split dynamically."""
